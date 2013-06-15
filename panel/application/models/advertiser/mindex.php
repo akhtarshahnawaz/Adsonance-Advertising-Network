@@ -144,14 +144,18 @@ class Mindex extends CI_Model
         $this->load->library('encrypt');
         $encryptedEmail=urlencode($this->encrypt->encode(strtolower($data['inputEmail'])));
         $verificationLink=site_url('advertiser/index/verifyUser').'/'.$encryptedEmail;
-        $message="Hello,".ucfirst(strtolower($data['inputFirstname'].' '.$data['inputLastname']))." \r\n";
-        $message.="Click on link below to verify your Adsonance.com Account \r\n \r\n ";
+
+        $message="Dear,".ucfirst(strtolower($data['inputFirstname'].' '.$data['inputLastname']))." \r\n";
+        $message.="Thank you for choosing Adsonance.com \r\n \r\n";
+        $message.="Click on link below to verify your Adsonance.com Account \r\n";
         $message.=$verificationLink;
-        $message.=" \n\n For more information contact us at: \r\n E-Mail: support@adsonance.com \r\n Phone: +91-9810344604 \r\n Website: http://www.adsonance.com";
+        $message.=" \n\n For any query related to account contact us at: \r\nE-Mail: support@adsonance.com \r\nPhone: +91-9810344604 \r\nWebsite: http://www.adsonance.com";
+
         $this->load->library('email');
-        $this->email->from('admin@adsonance.com', 'Adsonance.com');
+        $this->email->from('support@adsonance.com', 'Adsonance.com');
+        $this->email->reply_to('support@adsonance.com', 'Adsonance.com');
         $this->email->to($data['inputEmail']);
-        $this->email->subject('Adsonance account verification message');
+        $this->email->subject('Confirm your Adsonance.com account');
         $this->email->message($message);
         $result=$this->email->send();
         if($result){
@@ -162,7 +166,7 @@ class Mindex extends CI_Model
         }
     }
 
-    public function verifyUser($encodedUrlVerificationCode){
+    public function verifyUser($encodedUrlVerificationCode=null){
         $this->load->library('encrypt');
         $verificationCode=urldecode($encodedUrlVerificationCode);
         $Email=$this->encrypt->decode($verificationCode);
