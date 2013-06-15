@@ -363,3 +363,17 @@ $config['proxy_ips'] = '';
 
 
 $config['ImageUploadPath'] = 'uploads/';
+
+
+
+/*EMAIL CONFIGURATIONS*/
+
+$config['protocol'] = 'smtp';
+$config['charset'] = 'iso-8859-1';
+$config['wordwrap'] = TRUE;
+$config['smtp_host']='mail.adsonance.com';
+$config['smtp_user']='support';
+$config['smtp_pass']='gc949000';
+$config['smtp_port']=25;
+$config['priority']=1;
+$config['crlf']="\r\n";
