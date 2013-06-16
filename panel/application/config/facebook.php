@@ -9,3 +9,6 @@ $config['Facebook-Canvas-Url']	= 'http://www.octantdesigners.com/facebookapp/ind
 $config['Facebook-App-Url']	= 'http://apps.facebook.com/advertisex';
 $config['Facebook-Scope']	= 'email,publish_actions,user_website,publish_stream';
 $config['Facebook-Permission-Needed']	= array('email','publish_actions','user_website','publish_stream');
+
+
+$config['invitation_message']='Hi friends.. Join this facebook app if you want to earn money while using facebook!';
