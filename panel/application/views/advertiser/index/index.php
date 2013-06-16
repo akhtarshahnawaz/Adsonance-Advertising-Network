@@ -1,11 +1,19 @@
 <div class="container" xmlns="http://www.w3.org/1999/html">
+    <?php if(isset($notification)): ?>
+    <div class="alert <?php echo $alertType;?>">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <?php echo $notification?>
+    </div>
+    <?php endif;?>
 
-<div class="row">
+
+    <div class="row">
     <div class="span12">
         <a href="#selectCampaign"  data-toggle="modal"  class="btn btn-small pull-right btn-success" >Create an Ad</a>
         <br/><br/>
     </div>
 </div>
+
 
 
 <div class="row">
