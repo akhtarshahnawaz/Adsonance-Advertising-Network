@@ -377,3 +377,8 @@ $config['smtp_pass']='gc949000';
 $config['smtp_port']=25;
 $config['priority']=1;
 $config['crlf']="\r\n";
+
+
+/*PAYPAL EMAIL*/
+
+$config['paypal_email']='admin@octantdesigners.com';
