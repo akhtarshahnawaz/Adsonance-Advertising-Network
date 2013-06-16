@@ -3,7 +3,7 @@
         <div class="offset2 span8">
             <div class="well">
                 <p class="lead text-info" align="center">Wire Transfer</p>
-                <p align="center" class="text-warning">For wire transfer you can send money to one of the accounts below and leave us a mail at <a href="mailto://sales@adsonance.com">sales@adsonance.com</a> </p>
+                <p align="center" class="text-warning">For wire transfer you can send money to one of the accounts below and leave us a mail at <a href="mailto://sales@adsonance.com">support@adsonance.com</a> </p>
                 <p class="lead" align="center">SBI Account</p>
                 <table class="table table-bordered table-condensed table-striped">
                     <tr>
