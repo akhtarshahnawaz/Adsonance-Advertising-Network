@@ -47,7 +47,7 @@ class Index extends CI_Controller{
         }
 
         if($logged){
-            $message='Hey Guys I am using this App and i think that this is amazing app!';
+            $message=$this->config->item('invitation_message');
             $requests_url = "https://www.facebook.com/dialog/apprequests?app_id="
                 . $this->config->item('appId') . "&redirect_uri=" . urlencode($this->config->item('Facebook-App-Url'))
                 . "&message=" . $message;
