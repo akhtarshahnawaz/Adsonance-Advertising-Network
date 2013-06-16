@@ -25,6 +25,10 @@ class Index extends CI_Controller{
                 'USD'=>$this->config->item('usdMultiplier'),
                 'INR'=>$this->config->item('inrMultiplier')
             );
+            if($this->session->flashdata('notification')){
+                $data['alertType']=$this->session->flashdata('alertType');
+                $data['notification']=$this->session->flashdata('notification');
+            }
             $this->load->view('advertiser/structs/head');
             $this->load->view('advertiser/structs/header');
             $this->load->view('advertiser/index/index',$data);
