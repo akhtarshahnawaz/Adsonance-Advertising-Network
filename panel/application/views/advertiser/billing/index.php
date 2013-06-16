@@ -60,7 +60,7 @@
                     <td><?php echo $bill['transType']; ?></td>
                     <td><?php echo $bill['description']; ?></td>
                     <td><?php echo $bill['paymentMethod']; ?></td>
-                    <td><?php echo $bill['amount']; ?></td>
+                    <td><?php if($this->session->userdata('currency')=='INR'){ echo '&#8377; ';}elseif($this->session->userdata('currency')=='USD'){ echo '$ ';}?> <?php echo $bill['amount']; ?></td>
                 </tr>
                     <?php endforeach;?>
                 </tbody>
