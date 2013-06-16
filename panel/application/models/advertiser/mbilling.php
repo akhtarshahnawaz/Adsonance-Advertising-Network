@@ -41,6 +41,46 @@ class Mbilling extends CI_Model
     }
 
 
+    public function getUser(){
+        $userId=$this->session->userdata('key');
+        $this->db->select('*');
+        $this->db->from('advLogin');
+        $this->db->where('advLogin.pkey',$userId);
+        $this->db->join('advInfo','advInfo.advKeyInfo = advLogin.pkey','left');
+        $query=$this->db->get();
+        $result=$query->result_array();
+        return $result[0];
+    }
+
+    public function checkPaypalTransId($transId){
+        $this->db->where('transId',$transId);
+        $query=$this->db->get('advPayment');
+        $result=$query->result_array();
+        if(!empty($result)){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function addPaypalPayment($data){
+        if(is_array($data)){
+            $insertArray=array(
+                'advKeyPayment'=>$data['custom'],
+                'date'=>dateToday(),
+                'transType'=>'deposit',
+                'paymentMethod'=>'paypal',
+                'description'=>'',
+                'amount'=>$data['payment_amount'],
+                'transId'=>$data['txn_id'],
+                'transStatus'=>$data['payment_status']
+            );
+            $this->db->insert('advPayment',$insertArray);
+            return $this->db->insert_id();
+        }
+
+    }
+
 
 
 }
