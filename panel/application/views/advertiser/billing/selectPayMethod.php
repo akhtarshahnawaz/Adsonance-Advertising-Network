@@ -9,7 +9,11 @@
                 <table class="table table-bordered table-striped">
                     <tbody>
                     <tr>
-                        <td><input name="pay_method" checked="" type="radio" value="wireTransfer"></td>
+                        <td><input name="pay_method" checked="" type="radio" value="paypal"></td>
+                        <td>Paypal / Credit Card</td>
+                    </tr>
+                    <tr>
+                        <td><input name="pay_method" type="radio" value="wireTransfer"></td>
                         <td>Wire Transfer (Transfer to Bank Account)</td>
                     </tr>
                     </tbody>
@@ -21,6 +25,8 @@
                 </div>
                 </form>
             </div>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
         </div>
     </div>
 </div>
