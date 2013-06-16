@@ -41,7 +41,7 @@
                 </div>
 
 
-                <div class="control-group">
+              <!--  <div class="control-group">
                     <label class="control-label" for="inputCurrency">Currency</label>
                     <div class="controls">
                         <select name="inputCurrency" class="input-medium" id="inputCurrency"  lastSelected="<?php if(isset($data['inputCurrency'])){ echo $data['inputCurrency'];}?>" >
@@ -50,7 +50,8 @@
                         </select>
                         <a href="#" id="currencyttp" data-placement="right" rel="tooltip" title="This currency will be used for all your transactions."><i class="icon-question-sign"></i> </a>
                     </div>
-                </div>
+                </div>-->
+                <input type="hidden" name="inputCurrency" value="USD">
 
 
                 <div class="control-group">
