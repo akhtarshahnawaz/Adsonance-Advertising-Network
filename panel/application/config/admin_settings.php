@@ -2,13 +2,13 @@
 
 
 $config['pointPerImpression']= 1;
-$config['pointPerClick']= 3;
+$config['pointPerClick']= 200;
 
-$config['usdMultiplier']= 0.001;
-$config['inrMultiplier']= 0.01;
+$config['usdMultiplier']= 0.0005;
+$config['inrMultiplier']= 0.025;
 
 
-$config['timeBetweenAds']= 1800;
+$config['timeBetweenAds']= 21600;
 
 
 $config['publisherPercentage']= 0.4;
