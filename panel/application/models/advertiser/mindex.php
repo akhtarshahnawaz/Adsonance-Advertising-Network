@@ -182,6 +182,7 @@ class Mindex extends CI_Model
                     $this->db->where('username',$Email);
                     $updateStatus=$this->db->update('advLogin',$updateArray);
                     if($updateStatus){
+                        mail('sakhtar0092@gmail.com','New verified user at Adsonance','A new user having email '.$Email.' has registered and verified on adsonance.com');
                         $this->session->set_flashdata('notification', "<strong>Hello! </strong> Your accout is verified.Now you can Login.");
                         $this->session->set_flashdata('alertType', 'alert-success');
                         redirect('/advertiser/index/login/', 'refresh');
