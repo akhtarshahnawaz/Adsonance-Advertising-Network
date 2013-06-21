@@ -34,7 +34,7 @@ class Mindex extends CI_Model
 
             /*Check if user is stored in Database*/
             $user_ID=$this->get_UserID_by_FID($user_FID);
-            if(!$user_ID){
+            if($user_ID==false){
                 $user_FINFO=$this->facebook->api('/me?fields=first_name,last_name,email,website','GET');
                 $this->addUser($user_FID,$user_FINFO);
                 $sessiondata = array(
@@ -78,13 +78,15 @@ class Mindex extends CI_Model
 
 
     function get_UserID_by_FID($user_FID){
+        if($user_FID){
         $this->db->where('facebookId',$user_FID);
-        $query=$this->db->get('pubLogin');
+        $query=$this->db->get('pubLogin',1);
         $result=$query->result_array();
-        if($result){
+        if(!empty($result)){
             return $result[0]['pkey'];
         }else{
             return false;
+        }
         }
     }
 
@@ -92,9 +94,10 @@ class Mindex extends CI_Model
 
     public function addUser($userId,$userData){
         $data = array(
-            'facebookId'=>$userId,
+            'facebookId'=>$userId
         );
         $this->db->insert('pubLogin',$data);
+        $insertID=$this->db->insert_id();
 
         if(isset($userData['first_name'])){
             $firstname=$userData['first_name'];
@@ -111,7 +114,6 @@ class Mindex extends CI_Model
         }else{
             $email='';
         }
-
         if(isset($userData['website'])){
             $website=$userData['website'];
         }else{
@@ -119,7 +121,7 @@ class Mindex extends CI_Model
         }
 
         $data = array(
-            'pubKeyInfo'=>$this->db->insert_id(),
+            'pubKeyInfo'=>$insertID,
             'firstname' => $firstname ,
             'lastname' => $lastname ,
             'email' => $email,
