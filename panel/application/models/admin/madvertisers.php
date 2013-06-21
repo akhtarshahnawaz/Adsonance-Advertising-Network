@@ -14,7 +14,7 @@ class Madvertisers extends CI_Model
         }else{
             $this->db->select('*');
             $this->db->from('advLogin');
-            $this->db->join('advInfo', 'advInfo.advKeyInfo = advInfo.pkey');
+            $this->db->join('advInfo', 'advInfo.advKeyInfo = advInfo.pkey','left');
             $query = $this->db->get();
             return $query->result_array();
         }
