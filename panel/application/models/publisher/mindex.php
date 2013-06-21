@@ -15,7 +15,7 @@ class Mindex extends CI_Model
         if (!$user_FID) {
             $loginUrl = $this->facebook->getLoginUrl(array(
                 'scope' => $this->config->item('Facebook-Scope'),
-                'redirect_uri' => $this->config->item('Facebook-App-Url'),
+                'redirect_uri' => $this->config->item('Facebook-App-Url')
             ));
             print('<script> top.location.href=\'' . $loginUrl . '\'</script>');
         }else{
@@ -96,13 +96,35 @@ class Mindex extends CI_Model
         );
         $this->db->insert('pubLogin',$data);
 
+        if(isset($userData['first_name'])){
+            $firstname=$userData['first_name'];
+        }else{
+            $firstname='';
+        }
+        if(isset($userData['last_name'])){
+            $lastname=$userData['last_name'];
+        }else{
+            $lastname='';
+        }
+        if(isset($userData['email'])){
+            $email=$userData['email'];
+        }else{
+            $email='';
+        }
+
+        if(isset($userData['website'])){
+            $website=$userData['website'];
+        }else{
+            $website='';
+        }
+
         $data = array(
             'pubKeyInfo'=>$this->db->insert_id(),
-            'firstname' => $userData['first_name'] ,
-            'lastname' => $userData['last_name'] ,
-            'email' => $userData['email'],
+            'firstname' => $firstname ,
+            'lastname' => $lastname ,
+            'email' => $email,
             'phone' => '',
-            'website' => $userData['website'],
+            'website' => $website,
             'address' => ''
         );
         $this->db->insert('pubInfo',$data);
