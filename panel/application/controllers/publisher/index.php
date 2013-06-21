@@ -33,11 +33,6 @@ class Index extends CI_Controller{
 
 
 
-
-
-
-
-
     public function sendrequest(){
         if($this->session->userdata('PubloggedIn')){
             $logged=true;
