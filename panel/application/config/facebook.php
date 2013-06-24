@@ -11,4 +11,4 @@ $config['Facebook-Scope']	= 'email,publish_actions,user_website,publish_stream';
 $config['Facebook-Permission-Needed']	= array('email','publish_actions','user_website','publish_stream');
 
 
-$config['invitation_message']='Hi friends.. Join this facebook app if you want to earn money while using facebook!';
+$config['invitation_message']='Join Adsonance app to earn money while using facebook by sharing stories with your friends!';
