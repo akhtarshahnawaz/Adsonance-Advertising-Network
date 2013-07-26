@@ -102,8 +102,9 @@ if(!empty($_POST)){
             </form>
         </div>
         <div class="span3 well">
+        <h3 align="center">Head Office</h3>
             <address>
-                <strong>Adsonance</strong><br>
+                <strong>Adsonance Inc.</strong><br>
                 S3A/4,Joga Bai Ext.<br>
                 OKHLA <br>
                 New Delhi-110025<br>
