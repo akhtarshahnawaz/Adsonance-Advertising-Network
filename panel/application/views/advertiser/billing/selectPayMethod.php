@@ -12,10 +12,10 @@
                         <td><input name="pay_method" checked="" type="radio" value="paypal"></td>
                         <td>Paypal / Credit Card</td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td><input name="pay_method" type="radio" value="wireTransfer"></td>
                         <td>Wire Transfer (Transfer to Bank Account)</td>
-                    </tr>
+                    </tr>-->
                     </tbody>
                 </table>
 
