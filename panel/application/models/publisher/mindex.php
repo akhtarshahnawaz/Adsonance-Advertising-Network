@@ -141,73 +141,10 @@ class Mindex extends CI_Model
         return $query->result_array();
     }
 
-/*  OLD getAdsList Function
-    public function getAdsList($publisher_ID){
-        $white_listed_users=array();
-        $white_listed_campaigns=array();
-        $white_listed_ads=array();
-        $black_listed_ads=array();
-        //Get Whitelisted users
-        $this->db->select('pkey');
-        $this->db->where('status',1);
-        $query=$this->db->get('advLogin');
-        $result=$query->result_array();
-        foreach($result as $user){
-            $white_listed_users[]=$user['pkey'];
-        }
-        //Get Whitelisted users with active campaigns
-        if($white_listed_users){
-            $this->db->select('pkey');
-            $this->db->or_where_in('advKeyCamp', $white_listed_users);
-            $this->db->where('status','active');
-            $query=$this->db->get('advCampaign');
-            $result= $query->result_array();
-            foreach($result as $campaign){
-                $white_listed_campaigns[]=$campaign['pkey'];
-            }
-        }
-        //Get active campaigns with active ads
 
-        if($white_listed_campaigns){
-            $this->db->or_where_in('campkeyAd',$white_listed_campaigns);
-            $this->db->where('status','active');
-            $query=$this->db->get('advAd');
-            $result= $query->result_array();
-            foreach($result as $ad){
-                $white_listed_ads[]=$ad['pkey'];
-            }
-        }
-        //check if this publisher hasn't posted this ad recently
-
-        if($white_listed_ads){
-            $this->db->select('pkey');
-            $this->db->or_where_in('adkeyBuffer',$white_listed_ads);
-            $this->db->where('pubKeyBuffer',$publisher_ID);
-            $time=time()-1800;
-            $this->db->where('timestamp >',$time);
-            $query=$this->db->get('adBuffer');
-            $result=$query->result_array();
-            foreach($result as $ad){
-                $black_listed_ads[]=$ad['pkey'];
-            }
-        }
-        $finalised_ads=array_diff($white_listed_ads,$black_listed_ads);
-
-
-        if($finalised_ads){
-            $this->db->or_where_in('pkey',$finalised_ads);
-            $query=$this->db->get('advAd');
-            return $query->result_array();
-        }
-
-
-        return null;
-    }
-
-*/
-
-
-
+    /*
+     * Get Ads list which are active and have life time of campaign budget
+     * */
     public function lifetimeBudgetAds(){
         $this->db->select('clicks,cpm,date,campkeyAd,advLogin.status as userStatus,advCampaign.status as campStatus,advAd.status as adStatus,startDate,endDate,adKeyStats,budget,budgetPeriod,currency,advAd.pkey as adId,advCampaign.pkey as campId');
         $this->db->select_sum('clicks');
@@ -249,7 +186,9 @@ class Mindex extends CI_Model
     }
 
 
-
+    /*
+   * Get Ads list which are active and have daily of campaign budget
+   * */
     public function dailyBudgetAds(){
         $this->db->select('clicks,cpm,date,campKeyAd,advLogin.status as userStatus,advCampaign.status as campStatus,advAd.status as adStatus,startDate,endDate,adKeyStats,budget,budgetPeriod,currency,advAd.pkey as adId,advCampaign.pkey as campId');
         $this->db->select_sum('clicks');
@@ -264,35 +203,86 @@ class Mindex extends CI_Model
         $result=$query->result_array();
         $finalArray=array();
         foreach($result as $row){
-            //if($row['date']==dateToday() || $row['date']==null){
-                if($row['userStatus']==1 && $row['campStatus']==2 && $row['adStatus']==2){
-                    $startDate=createTimeStamp($row['startDate']);
-                    if($row['endDate'] == 'N/A'){
-                        $endDate='N/A';
-                    }else{
-                        $endDate=createTimeStamp($row['endDate']);
+            if($row['userStatus']==1 && $row['campStatus']==2 && $row['adStatus']==2){
+                $startDate=createTimeStamp($row['startDate']);
+                if($row['endDate'] == 'N/A'){
+                    $endDate='N/A';
+                }else{
+                    $endDate=createTimeStamp($row['endDate']);
+                }
+                if($startDate<=timestampToday() && ($endDate>=timestampToday() || $endDate=='N/A')){
+                    $cpmPoints=$row['cpm']*$this->config->item('pointPerImpression');
+                    $clickPoints=$row['clicks']*$this->config->item('pointPerClick');
+                    if($row['currency']=='USD'){
+                        $spend=($cpmPoints+$clickPoints)*$this->config->item('usdMultiplier');
+                    }elseif($row['currency']=='INR'){
+                        $spend=($cpmPoints+$clickPoints)*$this->config->item('inrMultiplier');
                     }
-                    if($startDate<=timestampToday() && ($endDate>=timestampToday() || $endDate=='N/A')){
-                        $cpmPoints=$row['cpm']*$this->config->item('pointPerImpression');
-                        $clickPoints=$row['clicks']*$this->config->item('pointPerClick');
-                        if($row['currency']=='USD'){
-                            $spend=($cpmPoints+$clickPoints)*$this->config->item('usdMultiplier');
-                        }elseif($row['currency']=='INR'){
-                            $spend=($cpmPoints+$clickPoints)*$this->config->item('inrMultiplier');
-                        }
-                        if($spend<$row['budget']){
-                            if($row['adId']!=null){
-                                $finalArray[]=$row['adId'];
-                            }
+                    if($spend<$row['budget']){
+                        if($row['adId']!=null){
+                            $finalArray[]=$row['adId'];
                         }
                     }
                 }
-            //}
+            }
         }
         return $finalArray;
     }
 
 
+    /*
+   * Check Whether advertisers have enough balance to pay for this advertisement if
+   *  not then finally create an array of blacklisted advertisers
+   * */
+
+    public function advertiserBalances($advertisersArray){
+        $this->db->select('currency,amount,transType,advKeyPayment');
+        $this->db->select_sum('amount');
+        $this->db->from('advLogin');
+        $this->db->join('advPayment', 'advPayment.advKeyPayment = advLogin.pkey','left');
+        $this->db->or_where_in('advKeyPayment',$advertisersArray);
+        $this->db->group_by(array('advPayment.transType','advPayment.advKeyPayment'));
+        $query=$this->db->get();
+        $result=$query->result_array();
+        $blacklist=array();
+        foreach($advertisersArray as $advertiser){
+            $spend=0;
+            $deposit=0;
+            $currency='';
+            $currencyToPoints=0;
+            foreach($result as $row){
+                if($row['transType']=='deposit' && $row['advKeyPayment'] == $advertiser){
+                    $deposit+=$row['amount'];
+                    $currency=$row['currency'];
+                }elseif($row['transType']=='spend' && $row['advKeyPayment'] == $advertiser){
+                    $spend+=$row['amount'];
+                    $currency=$row['currency'];
+                }
+            }
+            $remaining=$deposit-$spend;
+            $this->config->load('admin_settings');
+            if($currency=='USD'){
+                $currencyToPoints=$remaining/$this->config->item('usdMultiplier');
+            }elseif($currency=='INR'){
+                $currencyToPoints=$remaining/$this->config->item('inrMultiplier');
+            }
+
+            if($currencyToPoints < $this->session->userdata('totalFriends')){
+                $blacklist[]=$advertiser;
+            }
+            
+        }
+        return $blacklist;
+    }
+
+
+    /*
+     * Get lifetime whitelisted ads and daily whitelisted ads and then check
+     *  them in buffer table if they can be shown right now after that checks
+     * whether advertiser has enough credits to pay for this ad by using
+     * function advertiserBalances() if yes then it creates list of final
+     * advertisements to show.
+     * */
 
     public function getAds(){
         $dailyAds=$this->dailyBudgetAds();
@@ -310,14 +300,32 @@ class Mindex extends CI_Model
                 $black_listed_ads[]=$ad['adKeyBuffer'];
             }
         }
-        $finalised_ads=array_diff($whiteListedAds,$black_listed_ads);
-        if($finalised_ads){
-            $this->db->or_where_in('pkey',$finalised_ads);
-            $query=$this->db->get('advAd');
-            return $query->result_array();
+        $newWhiteListedAds=array_diff($whiteListedAds,$black_listed_ads);
+        if($newWhiteListedAds){
+            $this->db->select('advAd.name as name,description,link,image,title,advLogin.pkey as advKey,advAd.pkey as pkey');
+            $this->db->from('advLogin');
+            $this->db->or_where_in('advAd.pkey',$newWhiteListedAds);
+            $this->db->join('advCampaign', 'advCampaign.advKeyCamp = advLogin.pkey','left');
+            $this->db->join('advAd', 'advAd.campkeyAd = advCampaign.pkey','left');
+            $query=$this->db->get();
+            $result=$query->result_array();
+
+            $Advertisers=array();
+            foreach($result as $row){
+                $Advertisers[]=$row['advKey'];
+            }
+            $blacklist_due_to_low_balance=$this->advertiserBalances($Advertisers);
+            $finalArray=array();
+            foreach($result as $ad){
+                if(in_array($ad['advKey'],$blacklist_due_to_low_balance)){
+                    //BLACKLIST AD
+                }else{
+                    $finalArray[]=$ad;
+                }
+            }
+            return $finalArray;
         }
         return null;
     }
-
 
 }
