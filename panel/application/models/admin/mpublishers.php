@@ -8,11 +8,17 @@ class Mpublishers extends CI_Model
 
     public function getPublishers($pubKey=null){
         if(isset($pubKey)){
+            $this->db->select('*');
+            $this->db->from('pubLogin');
+            $this->db->join('pubInfo', 'pubInfo.pubKeyInfo = pubLogin.pkey','left');
             $this->db->where('pubKeyInfo',$pubKey);
-            $query=$this->db->get('pubInfo');
+            $query=$this->db->get();
             return $query->result_array();
         }else{
-            $query = $this->db->get('pubInfo');
+            $this->db->select('*');
+            $this->db->from('pubLogin');
+            $this->db->join('pubInfo', 'pubInfo.pubKeyInfo = pubLogin.pkey','left');
+            $query=$this->db->get();
             return $query->result_array();
         }
     }
