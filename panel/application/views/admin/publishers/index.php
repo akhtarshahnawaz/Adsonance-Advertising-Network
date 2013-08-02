@@ -21,7 +21,7 @@
                 <?php foreach($publishers as $row): ?>
                 <tr>
                     <td><?php echo $row['firstname'].' '.$row['lastname']; ?></td>
-                    <td><?php echo ''; ?></td>
+                    <td><?php echo $row['totalfriends']; ?></td>
                     <td><?php echo $row['email'] ?></td>
                     <td><?php echo $row['website'] ?></td>
                     <td><?php echo $row['address'] ?></td>
