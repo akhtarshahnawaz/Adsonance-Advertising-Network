@@ -64,4 +64,9 @@ $data['']='';
         redirect('/admin/index/login', 'refresh');
     }
 
+    public function refresh(){
+        $this->load->model('admin/mindex');
+        $this->mindex->refreshPublisherFriends();
+    }
+
 }
