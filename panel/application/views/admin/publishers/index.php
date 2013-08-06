@@ -60,7 +60,7 @@
         <?php  if($publishers): ?>
         <?php
         $attributes = array('class' => 'form-horizontal');
-        echo form_open('advertiser/ad/create', $attributes); ?>
+        echo form_open('admin/publishers/notify', $attributes); ?>
 
         <table class="table table-bordered table-condensed table-hover">
             <tbody>
@@ -69,7 +69,7 @@
 <br><br>
                 <?php foreach($publishers as $row): ?>
             <tr>
-                <td><input name="publisherKey[]" class="publisherKeys" type="checkbox" value="<?php echo $row['pkey'];?>"></td>
+                <td><input name="publisherKey[]" class="publisherKeys" type="checkbox" value="<?php echo $row['pubKeyInfo'];?>"></td>
                 <td><?php echo $row['firstname'].' '.$row['lastname']; ?></td>
             </tr>
                 <?php endforeach;?>
@@ -113,26 +113,27 @@ loadBootstrap('script.min') ;
     });
     $('#selectAll').bind('click',checkall);
 
-    $('#deselectAll').bind('click',uncheckall);
-
     function checkall(evnt){
+        $('#selectAll').unbind('click');
+        $('#selectAll').hide();
+        $('#deselectAll').show();
+        $('#deselectAll').bind('click',uncheckall);
+
         var checkboxes=$('.publisherKeys');
         for(var i=0; i<=checkboxes.length;i++){
             checkboxes[i].checked=true;
         }
-        $('#selectAll').hide();
-        $('#deselectAll').show();
-        $('#deselectAll').bind('click',uncheckall);
     }
 
     function uncheckall(evnt){
+        $('#deselectAll').unbind('click');
+        $('#deselectAll').hide();
+        $('#selectAll').show();
+        $('#selectAll').bind('click',checkall);
         var checkboxes=$('.publisherKeys');
         for(var i=0; i<=checkboxes.length;i++){
             checkboxes[i].checked=false;
         }
-        $('#selectAll').show();
-        $('#deselectAll').hide();
-        $('#selectAll').bind('click',checkall);
     }
 
 </script>
