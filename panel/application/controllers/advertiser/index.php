@@ -13,10 +13,11 @@ class Index extends CI_Controller{
             $data['campaigns']=$this->mindex->index();
             $this->load->model('advertiser/mspend');
             $data['dailySpend']=$this->mspend->dailySpend(5);
+            $currency=$this->session->userdata('currency');
             $data['balances']=$this->mspend->balances($this->session->userdata('key'));
             $data['cpmGraphData']= file_get_contents(site_url('advertiser/index/getUserCpmGraphData/'.$this->session->userdata('key')));
             $data['clicksGraphData']= file_get_contents(site_url('advertiser/index/getUserClicksGraphData/'.$this->session->userdata('key')));
-            $data['spendGraphData']=file_get_contents(site_url('advertiser/index/getUserSpendGraphData/'.$this->session->userdata('key')));
+            $data['spendGraphData']=file_get_contents(site_url('advertiser/index/getUserSpendGraphData/'.$this->session->userdata('key').'/'.$currency));
             $data['ctrGraphData']=file_get_contents(site_url('advertiser/index/getUserCtrGraphData/'.$this->session->userdata('key')));
             $this->config->load('admin_settings');
             $data['spendConfig']=array(
@@ -226,7 +227,7 @@ class Index extends CI_Controller{
                 if($row['cpm']==null || $row['cpm']==0){
                     $ctr=$row['clicks'];
                 }else{
-                    $ctr=$row['clicks']/$row['cpm'];
+                    $ctr=$row['clicks']*100/$row['cpm'];
                 }
                 $innerData[$key].='[ gd('.str_replace('/',',',$row['date']).'),'.$ctr.'],';
             }
@@ -249,15 +250,22 @@ class Index extends CI_Controller{
     /*
      * Generates Graph Data for Amount user Spend on each ad Daily
      * */
-    public function getUserSpendGraphData($userID){
+    public function getUserSpendGraphData($userID,$currency){
         $this->load->model('advertiser/mstats');
         $result=$this->mstats->getUserStats($userID);
+        $this->config->load('admin_settings');
+        $spendConfig=array(
+            'pointPerImpression'=>$this->config->item('pointPerImpression'),
+            'pointPerClick'=>$this->config->item('pointPerClick'),
+            'USD'=>$this->config->item('usdMultiplier'),
+            'INR'=>$this->config->item('inrMultiplier')
+        );
 
         $innerData=array();
         foreach($result as $key=>$value){
             $innerData[$key]='[';
             foreach($value as $row){
-                $spend=$row['cpm']+$row['clicks'];
+                $spend=($row['clicks']*$spendConfig['pointPerClick']+$row['cpm']*$spendConfig['pointPerImpression'])*$spendConfig[$currency];
                 $innerData[$key].='[ gd('.str_replace('/',',',$row['date']).'),'.$spend.'],';
             }
             $innerData[$key]=substr_replace($innerData[$key] ,"",-1);
