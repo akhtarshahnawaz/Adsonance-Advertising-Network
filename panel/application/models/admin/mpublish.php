@@ -179,10 +179,24 @@ class Mpublish extends CI_Model
         return $balances;
     }
 
+    public function getAdsUserAndCampaign($campKey){
+        $this->db->select('advCampaign.name,advCampaign.pkey as campKey,currency,advKeyCamp');
+        $this->db->from('advLogin');
+        $this->db->join('advCampaign', 'advCampaign.advKeyCamp = advLogin.pkey','left');
+        $this->db->having('campKey',$campKey);
+        $query=$this->db->get();
+        $result=$query->result_array();
+        if($result){
+            return $result[0];
+        }else{
+            return false;
+        }
+    }
+
 
     public function addStats($adsData,$postId,$publisherData){
         $adKey=$adsData['pkey'];
-        $impressions=$publisherData['totalFriends'];
+        $impressions=$publisherData['totalfriends'];
         $date=dateToday();
         $publisherKey=$publisherData['pkey'];
         $adsParentInfo=$this->getAdsUserAndCampaign($adsData['campkeyAd']);
