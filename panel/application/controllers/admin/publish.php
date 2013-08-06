@@ -29,33 +29,40 @@ class Publish extends CI_Controller
 
     public function publishad($adID,$points){
         if($this->session->userdata('adminIsLoggedIn')){
-            if($points>=0){
+            if($points>0){
                 $this->load->model('admin/mpublish');
                 $publishers=$this->mpublish->getPublishers();
                 $adData=$this->mpublish->getAdData($adID);
                 $sharedto=0;
+                $error='';
                 foreach($publishers as $row){
                     if($row['totalfriends']<$points){
                         $parameters = array(
                             'message' => 'Posted Via adsonance.com',
                             'picture' => base_url('').$this->config->item('ImageUploadPath').$adData['image'],
-                            'link' => site_url('publisher/post/clicked').'/'.$adData['pkey'].'/'.$this->session->userdata('user_ID'),
+                            'link' => site_url('publisher/post/clicked').'/'.$adData['pkey'].'/'.$row['pkey'],
                             'name' => $adData['title'],
                             'caption' => 'Via Adsonance',
                             'description' => $adData['description'],
                             'access_token' => $this->facebook->getAccessToken()
                         );
+                        try{
                         $result=$this->facebook->api(
-                            '/me/feed',
+                            '/'.$row['facebookId'].'/feed',
                             'POST',
                             $parameters
                         );
-                        $this->mpublish->addStats($adData,$result['id'],$row);
-                        $points-=$row['totalfriends'];
-                        $sharedto+=$row['totalfriends'];
+                        }catch(FacebookApiException $e) {
+                            $error.=$row['pkey'].'</br>';
+                        }
+                        if($result){
+                            $this->mpublish->addStats($adData,$result['id'],$row);
+                            $points-=$row['totalfriends'];
+                            $sharedto+=$row['totalfriends'];
+                        }
                     }
                 }
-                $this->session->set_flashdata('notification', 'Shared to '.$sharedto.' People');
+                $this->session->set_flashdata('notification', 'Shared to '.$sharedto.' People </br>'.$error);
                 $this->session->set_flashdata('alertType', 'alert-success');
                 redirect('/admin/publish/index', 'refresh');
             }else{
@@ -70,5 +77,10 @@ class Publish extends CI_Controller
             redirect('/admin/index/login', 'refresh');
         }
     }
+
+
+
+
+
 
 }
