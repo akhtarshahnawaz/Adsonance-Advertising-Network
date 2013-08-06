@@ -23,5 +23,11 @@ class Mpublishers extends CI_Model
         }
     }
 
+    public function getPublishersFromArray($publishersArray){
+        $this->db->or_where_in('pkey',$publishersArray);
+        $query=$this->db->get('pubLogin');
+        return $query->result_array();
+    }
+
 
 }
