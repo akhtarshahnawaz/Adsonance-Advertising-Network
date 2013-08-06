@@ -343,7 +343,7 @@ loadBootstrap('script.min') ;
             },
             tooltip: true,
             tooltipOpts: {
-                content: "<p style='margin: 0px'><b>%s</b></p> <p style='margin: 0px'><b>Date: </b>%x</p><p style='margin: 0px'><b>CTR: </b>%y</p>",
+                content: "<p style='margin: 0px'><b>%s</b></p> <p style='margin: 0px'><b>Date: </b>%x</p><p style='margin: 0px'><b>CTR: </b>%y %</p>",
                 shifts: {
                     x: -60,
                     y: 25
