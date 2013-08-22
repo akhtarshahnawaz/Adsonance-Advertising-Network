@@ -7,15 +7,26 @@ class Index extends CI_Controller{
     }
 
 
-    public function index(){
+    public function index($param=null){
         if($this->session->userdata('PubloggedIn')){
             $logged=true;
         }else{
             $this->load->model('publisher/mindex');
-            $logged=$this->mindex->login();
+            if(isset($param)){
+                $redirect=$this->config->item('Facebook-App-Url');
+                $logged=$this->mindex->login($redirect.$param); 
+            }else{
+                $logged=$this->mindex->login(); 
+            }
         }
 
-        if($logged){
+
+        if($logged && isset($param) && $param =='pizza-prom'){
+            $this->load->view('publisher/structs/head');
+            $this->load->view('publisher/structs/header');
+            $this->load->view('publisher/prom/pizza');
+            $this->load->view('publisher/structs/footer');
+        }elseif($logged){
             $this->load->model('publisher/mindex');
             $data['adsList']=$this->mindex->getAds();;
 

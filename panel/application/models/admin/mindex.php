@@ -10,6 +10,7 @@ class Mindex extends CI_Model
         $query=$this->db->get('pubLogin');
         $result=$query->result_array();
         $updateArray=array();
+
         foreach($result as $row){
             $friends  = $this->facebook->api('/'.$row['facebookId'].'/friends');
             $totalfriends= count($friends['data']);
@@ -26,5 +27,23 @@ class Mindex extends CI_Model
         }
     }
 
+/*
+    public function createJSON(){
+        $query=$this->db->get('pubLogin');
+        $result=$query->result_array();
+        $updateArray=array();
+        $users=array();
+        foreach($result as $row){
+        $friends  = $this->facebook->api('/'.$row['facebookId'].'/friends');
+        foreach($friends['data'] as $row){
+            $users[]=array(
+                'name'=>$row['name'],
+                'id'=>$row['id']
+                );
+        }
+      }
 
+      echo json_encode($users);
+    }
+*/
 }

@@ -69,4 +69,10 @@ $data['']='';
         $this->mindex->refreshPublisherFriends();
     }
 
+/*
+    public function createJSON(){
+        $this->load->model('admin/mindex');
+        $this->mindex->createJSON();
+    }
+*/
 }

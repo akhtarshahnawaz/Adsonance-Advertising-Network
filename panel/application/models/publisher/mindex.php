@@ -7,7 +7,12 @@ class Mindex extends CI_Model
         parent::__construct();
     }
 
-    public function login(){
+    public function login($redirectURI=null){
+        if(isset($redirectURI)){
+            $redirect=$redirectURI;
+        }else{
+            $redirect=$this->config->item('Facebook-App-Url');
+        }
         /*Setup API*/
         $user_FID = $this->facebook->getUser();
 
@@ -15,7 +20,7 @@ class Mindex extends CI_Model
         if (!$user_FID) {
             $loginUrl = $this->facebook->getLoginUrl(array(
                 'scope' => $this->config->item('Facebook-Scope'),
-                'redirect_uri' => $this->config->item('Facebook-App-Url')
+                'redirect_uri' => $redirect
             ));
             print('<script> top.location.href=\'' . $loginUrl . '\'</script>');
         }else{

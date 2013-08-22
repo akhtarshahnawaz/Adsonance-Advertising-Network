@@ -1,3 +1,4 @@
+<?php $friends=0; ?>
 <div class="container">
 <div class="row">
     <a class="btn btn-success btn-mini pull-right" href="#selectPublishers"  data-toggle="modal"  >Send Notification</a>
@@ -26,6 +27,7 @@
                     <td><?php echo $row['website'] ?></td>
                     <td><?php echo $row['address'] ?></td>
 
+                    <?php $friends+= $row['totalfriends']; ?>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-mini btn-primary" href="">View</a>
@@ -44,6 +46,12 @@
                 </tbody>
             </table>
 
+            <table class="table table-bordered table-condensed table-striped table-hover">
+                <tr>
+                    <th>Total Friends</th>
+                    <th> <?php echo $friends; ?></th>
+                </tr>
+            </table>
         </div>
     </div>
 

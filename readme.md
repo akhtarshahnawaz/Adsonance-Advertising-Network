@@ -31,7 +31,7 @@ Authentication{
 	}]
 
 	[{Allow Mod_rewrite by command
-		"a2enmod rewrite"
+		"sudo a2enmod rewrite"
 		and then change "AllowOverride none" to "AllowOverride all" in directory section of virtual hosts file
 	}]
 }
