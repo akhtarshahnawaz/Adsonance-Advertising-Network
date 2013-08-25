@@ -65,15 +65,20 @@ class Billing extends CI_Controller
                         redirect('advertiser/billing/wireTransfer');
                         break;
 
+                    case 'ccavenue':
+                        redirect('advertiser/billing/ccavenue');
+                        break;
+
                     default:
                         echo '';
                 }
 
 
             }else{
+                $data['currency']=$this->session->userdata('currency');
                 $this->load->view('advertiser/structs/head');
                 $this->load->view('advertiser/structs/header');
-                $this->load->view('advertiser/billing/selectPayMethod');
+                $this->load->view('advertiser/billing/selectPayMethod',$data);
                 $this->load->view('advertiser/structs/footer');
             }
         }else{
@@ -173,6 +178,7 @@ class Billing extends CI_Controller
         if($this->session->userdata('loggedIn')){
             $this->load->model('advertiser/mbilling');
             $data['userInfo']=$this->mbilling->getUser();
+            $data['currency']=$this->session->userdata('currency');
             $this->load->view('advertiser/structs/head');
             $this->load->view('advertiser/structs/header');
             $this->load->view('advertiser/billing/paypal',$data);
@@ -212,5 +218,89 @@ class Billing extends CI_Controller
         }
     }
 
+    public function ccavenue(){
+        if($this->session->userdata('loggedIn')){
+            $data=$this->input->post();
+            if($data['amount']){
+                $this->load->model('advertiser/mbilling');
+                $data['userInfo']=$this->mbilling->getUser();
+                $data['amount']=$data['amount'];
+                $data['currency']=$this->session->userdata('currency');
+                $this->load->view('advertiser/structs/head');
+                $this->load->view('advertiser/structs/header');
+                $this->load->view('advertiser/billing/ccavenue',$data);
+                $this->load->view('advertiser/structs/footer');
+            }else{
+                $data['currency']=$this->session->userdata('currency');
+                $this->load->view('advertiser/structs/head');
+                $this->load->view('advertiser/structs/header');
+                $this->load->view('advertiser/billing/amount',$data);
+                $this->load->view('advertiser/structs/footer');
+            }
+        }else{
+            $data['status']=array('state'=>false,'data'=>'Not Logged In!');
+            $this->load->view('advertiser/structs/head');
+            $this->load->view('advertiser/main/login',$data);
+            $this->load->view('advertiser/structs/footer');
+        }
+    }
+
+    public function ccavenue_notification(){
+        $this->load->helper('ccavenueLibrary');
+        $this->config->load('ccavenue');
+
+        $WorkingKey = $this->config->item('workingKey');
+        $Merchant_Id= $_REQUEST['Merchant_Id'];
+        $Amount= $_REQUEST['Amount'];
+        $Order_Id= $_REQUEST['Order_Id'];
+        $Merchant_Param= $_REQUEST['Merchant_Param'];
+        $Checksum= $_REQUEST['Checksum'];
+        $AuthDesc=$_REQUEST['AuthDesc'];
+
+        $Checksum = verifyChecksum($Merchant_Id, $Order_Id , $Amount,$AuthDesc,$Checksum,$WorkingKey);
+        $userInfo=explode('@@@',$Order_Id);
+
+        $this->load->model('advertiser/mbilling');
+
+        $data['custom']=$Merchant_Param;
+        $data['payment_amount']=$Amount;
+        $data['txn_id']=$Order_Id;
+
+
+
+        if($Checksum=="true" && $AuthDesc=="Y")
+        {
+            $data['payment_status']='SUCCESS';
+            $insertId=$this->mbilling->addPaypalPayment($data);
+            mail('sakhtar0092@gmail.com','Fund added to CCAvenue from Adsonance status: SUCCESS',"Your Adsonance CCAvenue Account has been funded with ".$Amount." INR having Email Id: ".$userInfo[1]."with insert ID: ".$insertId);
+
+            $this->session->set_flashdata('notification', '<strong>Successful!</strong> Transaction successfull. Funds are succesfully added to your account.');
+            $this->session->set_flashdata('alertType', 'alert-success');
+            redirect('advertiser/index');
+
+        }
+        else if($Checksum=="true" && $AuthDesc=="B")
+        {
+            $data['payment_status']='PENDING';
+            $insertId=$this->mbilling->addPaypalPayment($data);
+            mail('sakhtar0092@gmail.com','Fund added to CCAvenue from Adsonance status: PENDING',"Your Adsonance CCAvenue Account has been funded with ".$Amount." INR having Email Id: ".$userInfo[1]."with insert ID: ".$insertId." but status is pending.");
+
+            $this->session->set_flashdata('notification', '<strong>Successful!</strong> Transaction queued. Funds will be added to your account as soon as payment processor processes your payment.');
+            $this->session->set_flashdata('alertType', 'alert-success');
+            redirect('advertiser/index');
+        }
+        else if($Checksum=="true" && $AuthDesc=="N")
+        {
+            $this->session->set_flashdata('notification', '<strong>Cancelled!</strong> Transaction declined.');
+            $this->session->set_flashdata('alertType', 'alert-error');
+            redirect('advertiser/index');
+        }
+        else
+        {
+            $this->session->set_flashdata('notification', '<strong>Cancelled!</strong> Security Error. Illegal access detected');
+            $this->session->set_flashdata('alertType', 'alert-error');
+            redirect('advertiser/index');
+        }
+    }
 
 }
