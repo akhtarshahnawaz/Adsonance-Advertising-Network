@@ -81,6 +81,24 @@ class Mbilling extends CI_Model
 
     }
 
+     public function addCcavenuePayment($data){
+        if(is_array($data)){
+            $insertArray=array(
+                'advKeyPayment'=>$data['custom'],
+                'date'=>dateToday(),
+                'transType'=>'deposit',
+                'paymentMethod'=>'Debit Card / Net Banking / Credit Card',
+                'description'=>'',
+                'amount'=>$data['payment_amount'],
+                'transId'=>$data['txn_id'],
+                'transStatus'=>$data['payment_status']
+            );
+            $this->db->insert('advPayment',$insertArray);
+            return $this->db->insert_id();
+        }
+
+    }
+
 
 
 }
