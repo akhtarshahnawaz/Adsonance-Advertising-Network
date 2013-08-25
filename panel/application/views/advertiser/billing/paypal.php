@@ -31,13 +31,13 @@
         <input name="first_name" type="hidden" value="<?php echo $userInfo['firstname'];?>" />
         <input name="last_name" type="hidden" value="<?php echo $userInfo['lastname'];?>" />
         <input name="payer_email" type="hidden" value="<?php echo $userInfo['email'];?>" />
-        <input name="item_number" type="hidden" value="<?php echo $userInfo['advKeyInfo'];?>" />
+        <input name="item_number" type="hidden" value="<?php echo $userInfo['advKeyInfo'].'123321'.time();?>" />
         <input name="item_name" type="hidden" value="<?php echo "Adsonance account fund"; ?>" />
 
         <div class="control-group" >
             <label class="control-label" for="inputAmount">Amount</label>
             <div class="controls">
-                <input class="input-large" name="amount" type="text" id="inputAmount" placeholder="Amount (<?php echo $userInfo['currency'];?>)">
+                <input class="input-large" name="amount" type="text" id="inputAmount" placeholder="Amount (<?php echo $userInfo['currency'];?>)"><?php  if($currency=='USD'){ echo '$';}elseif($currency=='INR'){ echo '&#8377;';}?>
             </div>
         </div>
 

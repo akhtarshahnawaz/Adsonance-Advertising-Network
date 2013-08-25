@@ -19,17 +19,11 @@
             </div>
             <?php endif; ?>
 
-        <?php
-        $ci=& get_instance();
-        $ci->load->helper('ccavenueLibrary');
-
-        ?>
-
         <form method="post" action="#" class="form-horizontal"  style="margin: 0px; padding: 0px;">
             <div class="control-group" >
                 <label class="control-label" for="inputAmount">Amount</label>
                 <div class="controls">
-                    <input class="input-large" name="amount" type="text" id="inputAmount" placeholder="Amount (<?php echo $userInfo['currency'];?>)">
+                    <input class="input-large" name="amount" type="text" id="inputAmount" placeholder="Amount (<?php echo $currency ;?>)"> <?php  if($currency=='USD'){ echo '$';}elseif($currency=='INR'){ echo '&#8377; ';}?>
                 </div>
             </div>
 
