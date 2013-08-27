@@ -246,7 +246,7 @@ class Billing extends CI_Controller
     }
 
     public function ccavenue_notification(){
-        $this->load->helper('ccavenueLibrary');
+        $this->load->helper('ccavenuelibrary');
         $this->config->load('ccavenue');
 
         $WorkingKey = $this->config->item('workingKey');
@@ -258,7 +258,7 @@ class Billing extends CI_Controller
         $AuthDesc=$_REQUEST['AuthDesc'];
 
         $Checksum = verifyChecksum($Merchant_Id, $Order_Id , $Amount,$AuthDesc,$Checksum,$WorkingKey);
-        $userInfo=explode('@@@',$Order_Id);
+        $userInfo=explode('break',$Order_Id);
 
         $this->load->model('advertiser/mbilling');
 
