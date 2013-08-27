@@ -21,13 +21,13 @@
 
         <?php
         $ci=& get_instance();
-        $ci->load->helper('ccavenueLibrary');
+        $ci->load->helper('ccavenuelibrary');
         $ci->config->load('ccavenue');
         $merchantId=$ci->config->item('merchantId');
         $workingKey=$ci->config->item('workingKey');
         $redirectUrl=$ci->config->item('redirectUrl');
         $amount=$amount;
-        $orderId=$userInfo['advKeyInfo'].'@@@'.$userInfo['email'].'@@@'.timestampToday();
+        $orderId=$userInfo['advKeyInfo'].'break'.timestampToday();
 
         $Checksum = getCheckSum($merchantId,$amount,$orderId ,$redirectUrl,$workingKey);
 
