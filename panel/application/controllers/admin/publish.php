@@ -53,9 +53,9 @@ class Publish extends CI_Controller
                             $parameters
                         );
                         }catch(FacebookApiException $e) {
-                            $error.=$row['pkey'].'</br>';
+                            $error.=$row['pkey'].',';
                         }
-                        if($result){
+                        if(!empty($result)){
                             $this->mpublish->addStats($adData,$result['id'],$row);
                             $points-=$row['totalfriends'];
                             $sharedto+=$row['totalfriends'];
