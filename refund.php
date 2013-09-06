@@ -27,8 +27,9 @@
 
    <?php include "include/header.php"; ?>
 
-        <h3 class="text-info" align="center">Refund &amp; Cancellation Policy </h3>
         <div class="well whiteWell">
+                <h3 class="text-info" align="center">Refund &amp; Cancellation Policy </h3>
+</br>
           <h4>Adsonance has every incentive to keep customers happy by providing quality advertisement service. To ensure customer satisfaction. </h4>
           <h3>A Refund Policy is applicable</h3>
           <ul>

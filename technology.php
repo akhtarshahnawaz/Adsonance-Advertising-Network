@@ -26,10 +26,11 @@
 
 
     <?php include "include/header.php"; ?>
-
-
         <h2 class="text-info" align="center">Technology behind Adsonance</h2>
+
+
         <div class="well whiteWell">
+
 <p></p>
         <h4>Resonatic Advertising Platform</h4>
         <p>Adsonance's platform is designed  with resonatic, realtime and AI based Logical, Mathematical and Analytical groups of program modules.</p>

@@ -26,10 +26,11 @@
 
 <?php include "include/header.php"; ?>
 
-        <h2 class="text-info" align="center">Privacy</h2>
         <div class="well whiteWell">
+                <h2 class="text-info" align="center">Privacy</h2></br>
+
 <p></p>
-        <p>Welcome to the Adsonance  web site at  http://www.Adsonance.com (the "Site"). Adsonance is an online  advertising company and values the privacy of Internet visitors  ("Users") to the Site as well Users that visit web sites where our  advertising technology is enabled.</p>
+        <p>Welcome to the Adsonance  web site at  http://www.adsonance.com (the "Site"). Adsonance is an online  advertising company and values the privacy of Internet visitors  ("Users") to the Site as well Users that visit web sites where our  advertising technology is enabled.</p>
         <p>The purpose of this Privacy Policy is to provide Users  with information about what information we gather from Users, how we use  that information, what we do to protect that information, and your  choices regarding the collection and use of your data for   advertising purposes. We always welcome comments on our Privacy Policy  and constantly strive to maintain a Privacy Policy                 which improves the service we provide to advertisers,  publishers and Users in general.</p>
         <h4>About Our Online Advertising Services</h4>
         <p>Adsonance operates an online advertising network (the  "Technology") through which we work with hundreds of people around  the world buying display advertising space and reselling it in targeted  packages to advertisers and agencies. Users benefit from targeted  advertising as they receive advertisements that they are more likely to  be interested in, and advertisers benefit as advertising is more  efficiently delivered to interested Users.</p>

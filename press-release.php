@@ -28,8 +28,9 @@
     <?php include "include/header.php"; ?>
 
 
-        <h2 class="text-info" align="center">Press Releases</h2>
         <div class="well whiteWell">
+                <h2 class="text-info" align="center">Press Releases</h2>
+
             </br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
         </div>
 

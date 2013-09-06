@@ -27,9 +27,10 @@
 
    <?php include "include/header.php"; ?>
 
-        <h2 class="text-info" align="center">Terms of Use</h2>
         <div class="well whiteWell">
-          <p>Welcome, and thank you for your interest in Adsonance ("<strong>Adsonance</strong>", "<strong>we</strong>," or "<strong>us</strong>") and our website at <a href="http://www.adsonance.com">www.Adsonance.com</a> (the "<strong>Site</strong>").  These Terms of Use are a legally binding contract between you and  Adsonance regarding your use of the Site including without limitation  all content and/or materials available on or through the Site.  </p>
+                <h2 class="text-info" align="center">Terms of Use</h2></br>
+
+          <p>Welcome, and thank you for your interest in Adsonance ("<strong>Adsonance</strong>", "<strong>we</strong>," or "<strong>us</strong>") and our website at <a href="http://www.adsonance.com">www.adsonance.com</a> (the "<strong>Site</strong>").  These Terms of Use are a legally binding contract between you and  Adsonance regarding your use of the Site including without limitation  all content and/or materials available on or through the Site.  </p>
           <p>PLEASE READ THE FOLLOWING TERMS OF USE CAREFULLY. BY  ACCESSING, BROWSING, AND/OR OTHERWISE USING THE SITE, YOU ACKNOWLEDGE  THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THE FOLLOWING  TERMS AND CONDITIONS AND ALL OTHER OPERATING POLICIES (INCLUDING,  WITHOUT LIMITATION, ADSONANCE'S PRIVACY POLICY) THAT MAY BE PUBLISHED ON  THE SITE OR OTHERWISE MADE AVAILABLE TO YOU ON OR THROUGH THE SITE  (COLLECTIVELY, THESE "<strong>TERMS</strong>"). If you are not eligible, or do not agree to these Terms, then please do not use the Site.</p>
           <h4>1. Eligibility</h4>
           <p>You must be at least thirteen (13) years of age to use  the Site. By agreeing to these Terms, you represent and warrant to us:  (i) that you are at least thirteen (13) years of age; (ii) that you have  not previously been suspended or removed from the Site; and (iii) that  your registration and your use of the Site is in compliance with any and  all applicable laws and regulations. If you are using the Site on  behalf of an entity, organization, or company, you represent and warrant  that you have the authority to bind such organization to these Terms  and you agree to be bound by these Terms on behalf of such organization.</p>
