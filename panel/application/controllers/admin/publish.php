@@ -27,7 +27,7 @@ class Publish extends CI_Controller
         }
     }
 
-    public function publishad($adID,$points){
+    public function publishad($adID,$points,$remainingPoints){
         if($this->session->userdata('adminIsLoggedIn')){
             if($points>0){
                 $this->load->model('admin/mpublish');
@@ -36,7 +36,7 @@ class Publish extends CI_Controller
                 $sharedto=0;
                 $error='';
                 foreach($publishers as $row){
-                    if($row['totalfriends']<$points){
+                    if($row['totalfriends']<$points && $row['totalfriends']<$remainingPoints){
                         $parameters = array(
                             'message' => 'Posted Via adsonance.com',
                             'picture' => base_url('').$this->config->item('ImageUploadPath').$adData['image'],
@@ -58,6 +58,7 @@ class Publish extends CI_Controller
                         if(!empty($result)){
                             $this->mpublish->addStats($adData,$result['id'],$row);
                             $points-=$row['totalfriends'];
+                            $remainingPoints-=$row['totalfriends'];
                             $sharedto+=$row['totalfriends'];
                         }
                     }
