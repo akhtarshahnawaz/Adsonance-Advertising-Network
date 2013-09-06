@@ -271,7 +271,7 @@ class Billing extends CI_Controller
         if($Checksum=="true" && $AuthDesc=="Y")
         {
             $data['payment_status']='SUCCESS';
-            $insertId=$this->mbilling->addPaypalPayment($data);
+            $insertId=$this->mbilling->addCcavenuePayment($data);
             mail('sakhtar0092@gmail.com','Fund added to CCAvenue from Adsonance status: SUCCESS',"Your Adsonance CCAvenue Account has been funded with ".$Amount." INR having Email Id: ".$userInfo[1]."with insert ID: ".$insertId);
 
             $this->session->set_flashdata('notification', '<strong>Successful!</strong> Transaction successfull. Funds are succesfully added to your account.');
@@ -282,7 +282,7 @@ class Billing extends CI_Controller
         else if($Checksum=="true" && $AuthDesc=="B")
         {
             $data['payment_status']='PENDING';
-            $insertId=$this->mbilling->addPaypalPayment($data);
+            $insertId=$this->mbilling->addCcavenuePayment($data);
             mail('sakhtar0092@gmail.com','Fund added to CCAvenue from Adsonance status: PENDING',"Your Adsonance CCAvenue Account has been funded with ".$Amount." INR having Email Id: ".$userInfo[1]."with insert ID: ".$insertId." but status is pending.");
 
             $this->session->set_flashdata('notification', '<strong>Successful!</strong> Transaction queued. Funds will be added to your account as soon as payment processor processes your payment.');
