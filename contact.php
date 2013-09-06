@@ -48,9 +48,8 @@ if(!empty($_POST)){
 <?php include "include/header.php"; ?>
 
 
-<h2 align="center" class="text-info">Contact Us</h2>
 
-<div class="well content-holder">
+<div class="">
 
     <div class="row">
         <div class="span8">
