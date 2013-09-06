@@ -58,11 +58,12 @@
             <input type="hidden" name="Order_Id" value="<?php echo $orderId; ?>">
             <input type="hidden" name="Redirect_Url" value="<?php echo $redirectUrl; ?>">
             <input type="hidden" name="Checksum" value="<?php echo $Checksum; ?>">
+            <input type="hidden" name="Amount" value="<?php echo $amount; ?>">
 
             <div class="control-group" >
                 <label class="control-label" for="Amount">Amount</label>
                 <div class="controls">
-                    <input class="input-xlarge" name="Amount" type="text" id="Amount" value="<?php  if($currency=='USD'){ echo '$ ';}elseif($currency=='INR'){ echo '&#8377; ';}?><?php echo $amount; ?>" disabled>
+                    <input class="input-xlarge" name="Amount-shown" type="text" id="Amount" value="<?php  if($currency=='USD'){ echo '$ ';}elseif($currency=='INR'){ echo '&#8377; ';}?><?php echo $amount; ?>" disabled>
                 </div>
             </div>
             <div class="control-group" >
