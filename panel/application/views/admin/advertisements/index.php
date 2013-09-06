@@ -1,6 +1,6 @@
 <div class="container" xmlns="http://www.w3.org/1999/html">
     <div class="span12">
-        <p class="lead text-info" align="center"><strong>Unverified Advertisements</strong></p>
+        <h2 align="center"> Advertisements Verification </h2>
         <?php if(isset($notification)): ?>
         <div class="alert <?php echo $alertType;?>">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
