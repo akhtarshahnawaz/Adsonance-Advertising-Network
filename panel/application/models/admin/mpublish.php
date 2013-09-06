@@ -19,124 +19,190 @@ class Mpublish extends CI_Model
         return $result[0];
     }
 
-    public function lifetimeBudgetAds(){
-        $this->db->select('clicks,cpm,date,campkeyAd,advLogin.status as userStatus,advCampaign.status as campStatus,advAd.status as adStatus,startDate,endDate,adKeyStats,budget,budgetPeriod,currency,advAd.pkey as adId,advCampaign.pkey as campId');
+    public function getVerifiedAds(){
+        $this->db->select('advLogin.pkey as advKey,currency,clicks,cpm,date,campkeyAd,advLogin.status as userStatus,advCampaign.status as campStatus,advAd.status as adStatus,startDate,endDate,adKeyStats,budget,budgetPeriod,currency,advAd.pkey as adId,advCampaign.pkey as campId,title,image,advAd.name as name,link,description,advAd.pkey as pkey');
         $this->db->select_sum('clicks');
         $this->db->select_sum('cpm');
         $this->db->from('advLogin');
-        $this->db->where('budgetPeriod','lifetime');
+        $this->db->where('advLogin.status',1);
+        $this->db->where('advCampaign.status',2);
+        $this->db->where('advAd.status',2);
+
         $this->db->join('advCampaign', 'advCampaign.advKeyCamp = advLogin.pkey','left');
         $this->db->join('advAd', 'advAd.campkeyAd = advCampaign.pkey','left');
         $this->db->join('adStatistics', 'adStatistics.adKeyStats = advAd.pkey','left');
-        $this->db->group_by('advCampaign.pkey');
+
+        $this->db->group_by(array('advAd.pkey','date'));
         $query=$this->db->get();
         $result=$query->result_array();
-        $finalArray=array();
+
+        $this->deleteOutTimedAds($result);
+        $this->patchPointsSpendOnAds($result);
+
+        $splitedAds=$this->splitOnBudgetPeriod($result);
+        $dailyBudgetAds=$splitedAds['dailyAds'];
+        $lifetimeBudgetAds=$splitedAds['lifetimeAds'];
+
+        $dailyBudgetAds=$this->todayAdsBudget($dailyBudgetAds);
+        $lifetimeBudgetAds=$this->lifetimeAdsBudget($lifetimeBudgetAds);
+
+        $this->patchSpendOnCampaign($dailyBudgetAds);
+        $this->patchSpendOnCampaign($lifetimeBudgetAds);
+
+        $this->validateBudget($dailyBudgetAds);
+        $this->validateBudget($lifetimeBudgetAds);
+
+        return array('dailyAds'=>$dailyBudgetAds,'lifetimeAds'=>$lifetimeBudgetAds);
+    }
+
+    public function deleteOutTimedAds(&$Ads){
+        foreach($Ads as $key=>$row){
+            $startDate=createTimeStamp($row['startDate']);
+            if($row['endDate'] == 'N/A'){
+                $endDate='N/A';
+            }else{
+                $endDate=createTimeStamp($row['endDate']);
+            }
+            if($startDate<=timestampToday() && ($endDate>=timestampToday() || $endDate=='N/A')){
+                //Leave as it is
+            }else{
+                unset($Ads[$key]);
+            }
+        }
+    }
+
+
+    public function patchPointsSpendOnAds(&$Ads){
+        foreach($Ads as $key=>$row){
+            $cpmPoints=$row['cpm']*$this->config->item('pointPerImpression');
+            $clickPoints=$row['clicks']*$this->config->item('pointPerClick');
+            $Ads[$key]['cpm']=$cpmPoints;
+            $Ads[$key]['clicks']=$clickPoints;
+        }
+    }
+
+
+    public function splitOnBudgetPeriod($result){
+        $dailyAds=array();
+        $lifetimeAds=array();
         foreach($result as $row){
-            if($row['userStatus']==1 && $row['campStatus']==2 && $row['adStatus']==2){
-                $startDate=createTimeStamp($row['startDate']);
-                if($row['endDate'] == 'N/A'){
-                    $endDate='N/A';
-                }else{
-                    $endDate=createTimeStamp($row['endDate']);
-                }
-                if($startDate<=timestampToday() && ($endDate>=timestampToday() || $endDate=='N/A')){
-                    $cpmPoints=$row['cpm']*$this->config->item('pointPerImpression');
-                    $clickPoints=$row['clicks']*$this->config->item('pointPerClick');
-                    if($row['currency']=='USD'){
-                        $spend=($cpmPoints+$clickPoints)*$this->config->item('usdMultiplier');
-                    }elseif($row['currency']=='INR'){
-                        $spend=($cpmPoints+$clickPoints)*$this->config->item('inrMultiplier');
-                    }
-                    if($spend<$row['budget']){
-                        if($row['adId']!=null){
-                            $finalArray[]=$row['adId'];
-                        }
-                    }
+            if($row['budgetPeriod']=='daily'){
+                $dailyAds[]=$row;
+            }elseif($row['budgetPeriod']=='lifetime'){
+                $lifetimeAds[]=$row;
+            }
+        }
+        return array('dailyAds'=>$dailyAds,'lifetimeAds'=>$lifetimeAds);
+    }
+
+
+    public function todayAdsBudget($dailyBudgetAds){
+        $dailyAds=array();
+        foreach($dailyBudgetAds as $row){
+            if($row['date']==dateToday()){
+                $dailyAds[$row['adId']]=$row;
+            }else{
+                $row['cpm']=0;
+                $row['clicks']=0;
+                $dailyAds[$row['adId']]=$row;
+            }
+        }
+        return $dailyAds;
+    }
+
+    public function lifetimeAdsBudget($lifetimeBudgetAds){
+        $lifetimeAds=array();
+        foreach($lifetimeBudgetAds as $row){
+            if(isset($lifetimeAds[$row['adId']])){
+                $lifetimeAds[$row['adId']]['cpm']+=$row['cpm'];
+                $lifetimeAds[$row['adId']]['clicks']+=$row['clicks'];
+            }else{
+                $lifetimeAds[$row['adId']]=$row;
+            }
+        }
+
+        return $lifetimeAds;
+    }
+
+
+    function patchSpendOnCampaign(&$Ads){
+        $spendOnCampaign=array();
+        foreach($Ads as $row){
+            if(isset($spendOnCampaign[$row['campId']])){
+                $spendOnCampaign[$row['campId']]['cpm']+=$row['cpm'];
+                $spendOnCampaign[$row['campId']]['clicks']+=$row['clicks'];
+            }else{
+                $spendOnCampaign[$row['campId']]=array(
+                    'cpm'=>$row['cpm'],
+                    'clicks'=>$row['clicks']
+                );
+            }
+        }
+
+        foreach($Ads as $okey=>$orow){
+            foreach($spendOnCampaign as $ikey=>$irow){
+                if($orow['campId']==$ikey){
+                    $Ads[$okey]['cpm']=$irow['cpm'];
+                    $Ads[$okey]['clicks']=$irow['clicks'];
                 }
             }
         }
-        return $finalArray;
     }
 
 
 
-    public function dailyBudgetAds(){
-        $this->db->select('clicks,cpm,date,campKeyAd,advLogin.status as userStatus,advCampaign.status as campStatus,advAd.status as adStatus,startDate,endDate,adKeyStats,budget,budgetPeriod,currency,advAd.pkey as adId,advCampaign.pkey as campId');
-        $this->db->select_sum('clicks');
-        $this->db->select_sum('cpm');
-        $this->db->from('advLogin');
-        $this->db->where('budgetPeriod','daily');
-        $this->db->join('advCampaign', 'advCampaign.advKeyCamp = advLogin.pkey','left');
-        $this->db->join('advAd', 'advAd.campKeyAd = advCampaign.pkey','left');
-        $this->db->join('adStatistics', 'adStatistics.adKeyStats = advAd.pkey','left');
-        $this->db->group_by(array('date', 'advCampaign.pkey'));
-        $query=$this->db->get();
-        $result=$query->result_array();
-        $finalArray=array();
-        foreach($result as $row){
-            if($row['userStatus']==1 && $row['campStatus']==2 && $row['adStatus']==2){
-                $startDate=createTimeStamp($row['startDate']);
-                if($row['endDate'] == 'N/A'){
-                    $endDate='N/A';
-                }else{
-                    $endDate=createTimeStamp($row['endDate']);
-                }
-                if($startDate<=timestampToday() && ($endDate>=timestampToday() || $endDate=='N/A')){
-                    $cpmPoints=$row['cpm']*$this->config->item('pointPerImpression');
-                    $clickPoints=$row['clicks']*$this->config->item('pointPerClick');
-                    if($row['currency']=='USD'){
-                        $spend=($cpmPoints+$clickPoints)*$this->config->item('usdMultiplier');
-                    }elseif($row['currency']=='INR'){
-                        $spend=($cpmPoints+$clickPoints)*$this->config->item('inrMultiplier');
-                    }
-                    if($spend<$row['budget']){
-                        if($row['adId']!=null){
-                            $finalArray[]=$row['adId'];
-                        }
-                    }
-                }
+    public function validateBudget(&$ads){
+        foreach($ads as $key=>$row){
+            if($row['currency']=='USD'){
+                $spend=($row['cpm']+$row['clicks'])*$this->config->item('usdMultiplier');
+            }elseif($row['currency']=='INR'){
+                $spend=($row['cpm']+$row['clicks'])*$this->config->item('inrMultiplier');
+            }
+
+            if($spend>=$row['budget']){
+                unset($ads[$key]);
             }
         }
-        return $finalArray;
     }
 
 
 
     public function getAds(){
-        $dailyAds=$this->dailyBudgetAds();
-        $lifetimeAds=$this->lifetimeBudgetAds();
-        $whiteListedAds=$dailyAds+$lifetimeAds;
-        if($whiteListedAds){
-            $this->db->select('advAd.name as name,description,link,image,title,advLogin.pkey as advKey,advAd.pkey as pkey');
-            $this->db->from('advLogin');
-            $this->db->or_where_in('advAd.pkey',$whiteListedAds);
-            $this->db->join('advCampaign', 'advCampaign.advKeyCamp = advLogin.pkey','left');
-            $this->db->join('advAd', 'advAd.campkeyAd = advCampaign.pkey','left');
-            $this->db->join('adStatistics', 'adStatistics.adKeyStats = advAd.pkey','left');
-            $query=$this->db->get();
-            $result=$query->result_array();
+        $ads=$this->getVerifiedAds();
+        $dailyAds=$ads['dailyAds'];
+        $lifetimeAds=$ads['lifetimeAds'];
 
-            $Advertisers=array();
-            foreach($result as $row){
-                $Advertisers[]=$row['advKey'];
-            }
-            $advertiserBalances=$this->advertiserBalances($Advertisers);
-            foreach($result as $key=>$value){
-                foreach($advertiserBalances as $advertiser){
-                    if($value['advKey']==$advertiser['advertiser']){
-                        $result[$key]['points']=$advertiser['points'];
-                        $result[$key]['currency']=$advertiser['currency'];
-                        $result[$key]['remainingBalance']=$advertiser['remainingBalance'];
+        $advertisers=array();
 
-                    }
-                }
-            }
-            return $result;
+        foreach($dailyAds as $row){
+         $advertisers[]=$row['advKey'];
         }
-        return null;
+        foreach($lifetimeAds as $row){
+            $advertisers[]=$row['advKey'];
+        }
+
+        if(!empty($advertisers)){
+        $advertiserBalances=$this->advertiserBalances($advertisers);
+        $this->patchAdvertiserBalances($dailyAds,$advertiserBalances);
+        $this->patchAdvertiserBalances($lifetimeAds,$advertiserBalances);
+
+        return array('dailyAds'=>$dailyAds,'lifetimeAds'=>$lifetimeAds);
+        }else{
+            return null;
+        }
     }
 
+
+    public function patchAdvertiserBalances(&$ads,$advertiserBalances){
+        foreach($ads as $key=>$value){
+            foreach($advertiserBalances as $advertiser){
+                if($value['advKey']==$advertiser['advertiser']){
+                    $ads[$key]['points']=$advertiser['points'];
+                    $ads[$key]['remainingBalance']=$advertiser['remainingBalance'];
+                }
+            }
+        }
+    }
 
     public function advertiserBalances($advertisersArray){
         $this->db->select('currency,amount,transType,advKeyPayment');
@@ -172,12 +238,12 @@ class Mpublish extends CI_Model
             $balances[]=array(
                 'advertiser'=>$advertiser,
                 'remainingBalance'=>$remaining,
-                'currency'=>$currency,
                 'points'=>$currencyToPoints
             );
         }
         return $balances;
     }
+
 
     public function getAdsUserAndCampaign($campKey){
         $this->db->select('advCampaign.name,advCampaign.pkey as campKey,currency,advKeyCamp');
