@@ -102,8 +102,8 @@
                                 <p class="text-error"> <?php echo $row['status']; ?></p>
                             <?php endif; ?>
                         </td>
-                        <td><?php if(isset($row['clicks'])){echo $row['clicks'];}else{echo '-';} ?></td>
                         <td><?php if(isset($row['cpm'])){echo $row['cpm'];}else{echo '-';} ?></td>
+                        <td><?php if(isset($row['clicks'])){echo $row['clicks'];}else{echo '-';} ?></td>
                         <td><?php if(isset($row['cpm']) && isset($row['clicks']) && $row['cpm']!=0){echo $row['clicks']*100/$row['cpm'].' %'; } else { echo '-';}?></td>
                         <td><?php if($this->session->userdata('currency')=='INR'){ echo '&#8377; ';}elseif($this->session->userdata('currency')=='USD'){ echo '$ ';} echo ($row['clicks']*$spendConfig['pointPerClick']+$row['cpm']*$spendConfig['pointPerImpression'])*$spendConfig[$this->session->userdata('currency')]; ?></td>
                         <td>
