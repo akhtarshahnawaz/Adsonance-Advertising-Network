@@ -18,6 +18,8 @@
     loadAsset(array('advertiser-admin.css'=>'style'));
 
     ?>
+    <link rel="shortcut icon" href="<?php assetLink(array('favicon.png'=>'image'));?>">
+
 </head>
 
 <body>
