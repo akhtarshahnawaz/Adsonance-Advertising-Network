@@ -26,6 +26,11 @@ class Index extends CI_Controller{
             $this->load->view('publisher/structs/header');
             $this->load->view('publisher/prom/pizza');
             $this->load->view('publisher/structs/footer');
+        }elseif($logged && isset($param) && $param =='iphone5-prom'){
+            $this->load->view('publisher/structs/head');
+            $this->load->view('publisher/structs/header');
+            $this->load->view('publisher/prom/iphone');
+            $this->load->view('publisher/structs/footer');
         }elseif($logged){
             $this->load->model('publisher/mindex');
             $data['adsList']=$this->mindex->getAds();;
