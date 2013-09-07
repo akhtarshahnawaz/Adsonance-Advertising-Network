@@ -207,7 +207,7 @@ class Mpost extends CI_Model
      * */
 
 
-    public function addCickStats($adsData,$pubId){
+    public function addCickStats($adsData,$pubId=null){
         $date=dateToday();
         $adId=$adsData['pkey'];
         $adsParentInfo=$this->getAdsUserAndCampaign($adsData['campkeyAd']);
@@ -274,59 +274,62 @@ class Mpost extends CI_Model
             $this->db->insert('advPayment',$parameter);
         }
 
-        //Updating Publisher's Statistics Table
+        if(isset($pubId)){
+            //Updating Publisher's Statistics Table
 
-        $this->db->where('date',$date);
-        $this->db->where('adType','Facebook Share');
-        $this->db->where('pubKeyStats',$pubId);
-        $query=$this->db->get('pubStatistics');
-        $result=$query->result_array();
-
-        if($result){
-            $parameter=array(
-                'clicks'=>$result[0]['clicks']+1
-            );
             $this->db->where('date',$date);
+            $this->db->where('adType','Facebook Share');
             $this->db->where('pubKeyStats',$pubId);
-            $this->db->update('pubStatistics',$parameter);
-        }else{
-            $parameter=array(
-                'pubKeyStats'=>$pubId,
-                'adType'=>'Facebook Share',
-                'date'=>$date,
-                'clicks'=>1
-            );
-            $this->db->insert('pubStatistics',$parameter);
-        }
+            $query=$this->db->get('pubStatistics');
+            $result=$query->result_array();
 
-        //Updating Publisher's Payment Table
-        $this->db->where('date',$date);
-        $this->db->where('pubKeyPayment',$pubId);
-        $this->db->where('transType','earned');
-        $this->db->where('description','Story Click Earning');
-        $query=$this->db->get('pubPayment');
-        $result=$query->result_array();
+            if($result){
+                $parameter=array(
+                    'clicks'=>$result[0]['clicks']+1
+                );
+                $this->db->where('date',$date);
+                $this->db->where('pubKeyStats',$pubId);
+                $this->db->update('pubStatistics',$parameter);
+            }else{
+                $parameter=array(
+                    'pubKeyStats'=>$pubId,
+                    'adType'=>'Facebook Share',
+                    'date'=>$date,
+                    'clicks'=>1
+                );
+                $this->db->insert('pubStatistics',$parameter);
+            }
 
-        if($result){
-            $parameter=array(
-                'amount'=>$result[0]['amount']+$publisherEarning
-            );
+            //Updating Publisher's Payment Table
             $this->db->where('date',$date);
             $this->db->where('pubKeyPayment',$pubId);
             $this->db->where('transType','earned');
             $this->db->where('description','Story Click Earning');
-            $this->db->update('pubPayment',$parameter);
-       }else{
-            $parameter=array(
-                'pubKeyPayment'=>$pubId,
-                'date'=>$date,
-                'amount'=>$publisherEarning,
-                'transType'=>'earned',
-                'description'=>'Story Click Earning',
-                'transMethod'=>'-'
-            );
-            $this->db->insert('pubPayment',$parameter);
+            $query=$this->db->get('pubPayment');
+            $result=$query->result_array();
+
+            if($result){
+                $parameter=array(
+                    'amount'=>$result[0]['amount']+$publisherEarning
+                );
+                $this->db->where('date',$date);
+                $this->db->where('pubKeyPayment',$pubId);
+                $this->db->where('transType','earned');
+                $this->db->where('description','Story Click Earning');
+                $this->db->update('pubPayment',$parameter);
+            }else{
+                $parameter=array(
+                    'pubKeyPayment'=>$pubId,
+                    'date'=>$date,
+                    'amount'=>$publisherEarning,
+                    'transType'=>'earned',
+                    'description'=>'Story Click Earning',
+                    'transMethod'=>'-'
+                );
+                $this->db->insert('pubPayment',$parameter);
+            }
         }
+
     }
 
 
