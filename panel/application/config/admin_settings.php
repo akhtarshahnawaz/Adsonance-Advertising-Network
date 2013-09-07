@@ -2,7 +2,7 @@
 
 
 $config['pointPerImpression']= 1;
-$config['pointPerClick']= 200;
+$config['pointPerClick']= 50;
 
 $config['usdMultiplier']= 0.0005;
 $config['inrMultiplier']= 0.025;
