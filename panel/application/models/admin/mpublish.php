@@ -43,6 +43,7 @@ class Mpublish extends CI_Model
         $dailyBudgetAds=$splitedAds['dailyAds'];
         $lifetimeBudgetAds=$splitedAds['lifetimeAds'];
 
+
         $dailyBudgetAds=$this->todayAdsBudget($dailyBudgetAds);
         $lifetimeBudgetAds=$this->lifetimeAdsBudget($lifetimeBudgetAds);
 
@@ -155,12 +156,17 @@ class Mpublish extends CI_Model
         foreach($ads as $key=>$row){
             if($row['currency']=='USD'){
                 $spend=($row['cpm']+$row['clicks'])*$this->config->item('usdMultiplier');
+                $multiplier=$this->config->item('usdMultiplier');
             }elseif($row['currency']=='INR'){
                 $spend=($row['cpm']+$row['clicks'])*$this->config->item('inrMultiplier');
+                $multiplier=$this->config->item('inrMultiplier');
             }
 
-            if($spend>=$row['budget']){
+            if($spend>$row['budget']){
                 unset($ads[$key]);
+            }else{
+                $remainingBudget=$row['budget']-$spend;
+                $ads[$key]['remainingPoints']=$remainingBudget/$multiplier;
             }
         }
     }
