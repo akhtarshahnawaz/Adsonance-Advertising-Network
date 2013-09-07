@@ -21,27 +21,29 @@ class Madvertisers extends CI_Model
     }
 
 
-
-    public function getCampaigns($advKey=null){
-        if(isset($advKey)){
-            $this->db->where('advKeyCamp',$advKey);
-            $query=$this->db->get('advCampaign');
-            return $query->result_array();
-        }else{
-            return null;
-        }
+    public function getAdvertiser($advKey){
+        $this->db->where('pkey',$advKey);
+        $query=$this->db->get('advLogin');
+        $result=$query->result_array();
+        return $result;
     }
 
 
-    public function getAds($campKey=null){
-        if(isset($advKey)){
-            $this->db->where('campKeyAd',$advKey);
-            $query=$this->db->get('advAd');
-            return $query->result_array();
-        }else{
-            return null;
+    public function addfund($data){
+        $inputArray=array(
+            'advKeyPayment'=>$data['advKey'],
+            'date'=>$data['inputPayDate'],
+            'transType'=>'deposit',
+            'paymentMethod'=>$data['inputPayMethod'],
+            'description'=>$data['inputDescription'],
+            'amount'=>$data['inputAmount'],
+            'transId'=>$data['advKey'].'break'.timestampToday(),
+            'transStatus'=>'SUCCESS'
+        );
+        if($this->db->insert('advPayment',$inputArray)){
+            $this->session->set_flashdata('notification', 'Fund Added Succesfully');
+            $this->session->set_flashdata('alertType', 'alert-success');
+            redirect('/admin/advertisers/index', 'refresh');
         }
     }
-
-
 }
