@@ -20,23 +20,24 @@
                 <tbody>
                 <?php foreach($advertisers as $row): ?>
                 <tr>
+                    <?php $address=explode('$~$',$row['address'])?>
+
                     <td><?php echo $row['firstname'].' '.$row['lastname']; ?></td>
                     <td><?php echo $row['designation'] ?></td>
                     <td><?php echo $row['company'] ?></td>
                     <td><?php echo $row['email'] ?></td>
                     <td><?php echo $row['phone'] ?></td>
                     <td><?php echo $row['website'] ?></td>
-                    <td><?php echo $row['address'] ?></td>
+                    <td><?php echo $address[3].', '.$address[2].', '.$address[1].' - '.$address[0]; ?></td>
 
                     <td>
                         <div class="btn-group">
-                            <a class="btn btn-mini btn-primary" href="<?php echo site_url('admin/advertisers/view').'/'.$row['advKeyInfo']; ?>">View Campaigns</a>
+                        <a class="btn btn-mini btn-primary" target="_blank" href="<?php echo site_url('admin/advertisers/loginas').'/'.$row['advKeyInfo']; ?>">Login</a>
                             <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <!-- dropdown menu links -->
-                                <li><a href="<?php echo site_url('admin/advertisers/sendNotification').'/'.$row['advKeyInfo']; ?>"><i class="icon-share"></i> Send Notification</a></li>
+                            </button>                            <ul class="dropdown-menu">
+                                <!-- dropdown menu links-->
+                                <li><a href="<?php echo site_url('admin/advertisers/addfund').'/'.$row['advKeyInfo'].'/'.$row['currency']; ?>"><i class="icon-arrow-down"></i> Add Fund</a></li>
                             </ul>
                         </div>
                     </td>
