@@ -46,7 +46,7 @@
                 <td><?php echo $row['points'].' points </br></br> '.$row['remainingBalance'].' USD';?></td>
 
                 <td>
-                    <a class="btn btn-mini btn-success" href="<?php echo site_url('admin/publish/publishad').'/'.$row['pkey'].'/'.$row['points']; ?>"><i class="icon-ok"></i> Publish Ad</a></br></br>
+                    <a class="btn btn-mini btn-success" href="<?php echo site_url('admin/publish/publishad').'/'.$row['pkey'].'/'.$row['points'].'/'.$row['remainingPoints']; ?>"><i class="icon-ok"></i> Publish Ad</a></br></br>
                 </td>
             </tr>
                 <?php
