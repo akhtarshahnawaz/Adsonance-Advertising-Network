@@ -42,12 +42,15 @@ class Post extends CI_Controller
     }
 
     public function clicked($adId=null,$pubId=null){
-        if($adId && $pubId){
+        if($adId){
             $this->load->model('publisher/mpost');
             $ad=$this->mpost->getAdsData($adId);
             $pub=$this->mpost->checkPublisher($pubId);
             if($ad && $pub){
                 $this->mpost->addCickStats($ad,$pubId);
+                redirect($ad['link'],'refresh');
+            }elseif($ad){
+                $this->mpost->addCickStats($ad);
                 redirect($ad['link'],'refresh');
             }else{
                 redirect('http://www.adsonance.com','refresh');
