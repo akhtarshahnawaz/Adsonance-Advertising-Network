@@ -40,7 +40,7 @@ class Publish extends CI_Controller
                         $parameters = array(
                             'message' => 'Posted Via adsonance.com',
                             'picture' => base_url('').$this->config->item('ImageUploadPath').$adData['image'],
-                            'link' => site_url('publisher/post/clicked').'/'.$adData['pkey'].'/'.$row['pkey'],
+                            'link' => site_url('publisher/post/clicked').'/'.$adData['pkey'],
                             'name' => $adData['title'],
                             'caption' => 'Via Adsonance',
                             'description' => $adData['description'],
