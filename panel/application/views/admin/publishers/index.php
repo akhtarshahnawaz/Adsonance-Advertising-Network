@@ -14,7 +14,6 @@
                     <th>Email</th>
                     <th>Website</th>
                     <th>Address</th>
-                    <th></th>
                 </tr>
                 </thead>
 
@@ -28,18 +27,6 @@
                     <td><?php echo $row['address'] ?></td>
 
                     <?php $friends+= $row['totalfriends']; ?>
-                    <td>
-                        <div class="btn-group">
-                            <a class="btn btn-mini btn-primary" href="">View</a>
-                            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <!-- dropdown menu links -->
-                                <li><a href=""><i class="icon-remove"></i> View Ads</a></li>
-                            </ul>
-                        </div>
-                    </td>
                 </tr>
 
                     <?php endforeach; ?>
