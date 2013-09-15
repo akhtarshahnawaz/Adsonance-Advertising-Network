@@ -20,7 +20,7 @@ class Post extends CI_Controller
             $ad=$this->mpost->getAdsData($adKey);
             if($ad){
                 $parameters = array(
-                    'message' => 'Posted Via adsonance.com',
+                    'message' => $ad['description'],
                     'picture' => base_url('').$this->config->item('ImageUploadPath').$ad['image'],
                     'link' => site_url('publisher/post/clicked').'/'.$ad['pkey'].'/'.$this->session->userdata('user_ID'),
                     'name' => $ad['title'],
