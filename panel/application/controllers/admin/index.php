@@ -13,7 +13,8 @@ class Index extends CI_Controller
     public function index(){
         if($this->session->userdata('adminIsLoggedIn')){
             $this->load->model('admin/mindex');
-$data['']='';
+            $data['withdrawalRequests']=$this->mindex->pendingPayments();
+
             $this->load->view('admin/structs/head');
             $this->load->view('admin/structs/header');
             $this->load->view('admin/index/index',$data);
