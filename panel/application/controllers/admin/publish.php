@@ -38,7 +38,7 @@ class Publish extends CI_Controller
                 foreach($publishers as $row){
                     if($row['totalfriends']<$points && $row['totalfriends']<$remainingPoints){
                         $parameters = array(
-                            'message' => 'Posted Via adsonance.com',
+                            'message' => $adData['description'],
                             'picture' => base_url('').$this->config->item('ImageUploadPath').$adData['image'],
                             'link' => site_url('publisher/post/clicked').'/'.$adData['pkey'],
                             'name' => $adData['title'],
