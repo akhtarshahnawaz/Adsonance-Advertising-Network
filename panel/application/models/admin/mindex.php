@@ -46,4 +46,13 @@ class Mindex extends CI_Model
       echo json_encode($users);
     }
 */
+
+    public function pendingPayments(){
+        $this->db->where('userType','publisher');
+        $this->db->where('status','pending');
+        $query=$this->db->get('paymentProcessing');
+        $result=$query->result_array();
+        return $result;
+    }
+
 }
