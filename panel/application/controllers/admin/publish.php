@@ -8,8 +8,8 @@ class Publish extends CI_Controller
 
     public function index(){
         if($this->session->userdata('adminIsLoggedIn')){
-            $this->load->model('admin/mpublish');
-            $data['adstopublish']=$this->mpublish->getAds();
+            $this->load->model('publisher/mgetads');
+            $data['adstopublish']=$this->mgetads->getAdsForAdminPublish();
 
             if($this->session->flashdata('notification')){
                 $data['alertType']=$this->session->flashdata('alertType');
