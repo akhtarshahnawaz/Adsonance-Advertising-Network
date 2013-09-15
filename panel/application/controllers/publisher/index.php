@@ -32,8 +32,8 @@ class Index extends CI_Controller{
             $this->load->view('publisher/prom/iphone');
             $this->load->view('publisher/structs/footer');
         }elseif($logged){
-            $this->load->model('publisher/mindex');
-            $data['adsList']=$this->mindex->getAds();;
+            $this->load->model('publisher/mgetads');
+            $data['adsList']=$this->mgetads->getAdsforFacebookApp();;
 
             $this->load->model('publisher/mbilling');
             $data['totalEarning']=$this->mbilling->totalEarning();
