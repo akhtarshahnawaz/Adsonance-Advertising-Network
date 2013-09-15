@@ -62,4 +62,8 @@ class Publishers extends CI_Controller
             redirect('/admin/index/login', 'refresh');
         }
     }
+
+    public function withdrawalRequest(){
+
+    }
 }
