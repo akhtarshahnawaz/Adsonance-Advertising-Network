@@ -30,15 +30,27 @@
                 <th></th>
                 </thead>
                 <tbody>
+                <?php
+                    if(isset($adsList)){
+                        $dailyAds=$adsList['dailyAds'];
+                        $lifetimeAds=$adsList['lifetimeAds'];
+                    }
+                ?>
 
-                    <?php foreach($adsList as $ad):?>
+                    <?php foreach($dailyAds as $ad):?>
                 <tr>
                     <td><?php echo $ad['title'];?></td>
                     <td><?php echo '$ '.$publisherEarning; ?></td>
-                    <td><a href="<?php echo site_url('publisher/post/postad')."/".$ad['pkey']; ?>" class="btn btn-success btn-mini">Share Story</a> </td>
+                    <td><a href="<?php echo site_url('publisher/post/postad')."/".$ad['adId']; ?>" class="btn btn-success btn-mini">Share Story</a> </td>
                 </tr>
                     <?php endforeach; ?>
-
+                    <?php foreach($lifetimeAds as $ad):?>
+                <tr>
+                    <td><?php echo $ad['title'];?></td>
+                    <td><?php echo '$ '.$publisherEarning; ?></td>
+                    <td><a href="<?php echo site_url('publisher/post/postad')."/".$ad['adId']; ?>" class="btn btn-success btn-mini">Share Story</a> </td>
+                </tr>
+                    <?php endforeach; ?>
 
 
                 </tbody>
