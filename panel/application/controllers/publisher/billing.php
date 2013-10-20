@@ -77,7 +77,6 @@ class Billing extends CI_Controller
                 $this->load->model('publisher/mbilling');
                 $totalEarning=$this->mbilling->totalEarning();
                 if($data['inputAmount']>$totalEarning){
-                    var_dump('from inside');
                     $data['error']="Withdrawal amount can't be more than your total earning.";
                     $this->load->view('publisher/structs/head');
                     $this->load->view('publisher/structs/header');
