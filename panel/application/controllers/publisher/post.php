@@ -34,7 +34,7 @@ class Post extends CI_Controller
                         $parameters
                     );
 
-                $this->mpost->addStats($ad,$result['id']);
+                    $this->mpost->addStats($ad,$result['id']);
             }
             print('<script> top.location.href=\'' . $this->config->item('Facebook-App-Url') . '\'</script>');
         }
