@@ -45,9 +45,10 @@ class Mpublish extends CI_Model
             'pointPerImpression'=>$this->config->item('pointPerImpression'),
             'USD'=>$this->config->item('usdMultiplier'),
             'INR'=>$this->config->item('inrMultiplier'),
-            'pubPercent'=>$this->config->item('publisherPercentage')
+            'pubPercent'=>$this->config->item('adminPublishPublisherPercentage')
         );
         $amount=$impressions*$spendConfig['pointPerImpression']*$spendConfig[$adsParentInfo['currency']];
+        $publisherEarning=$impressions*$spendConfig['pointPerImpression']*$spendConfig['USD']*$spendConfig['pubPercent'];
 
 
         //Updating Buffer Table
@@ -59,6 +60,7 @@ class Mpublish extends CI_Model
             'timestamp'=>timestampToday()
         );
         $this->db->insert('adBuffer',$parameter);
+
 
 
 
@@ -85,8 +87,6 @@ class Mpublish extends CI_Model
             );
             $this->db->insert('adStatistics',$parameter);
         }
-
-
 
 
         //Updating Advertisers's Payment Table
@@ -118,6 +118,60 @@ class Mpublish extends CI_Model
 
 
 
+        //Updating Publisher's Statistics Table
+        $this->db->where('date',$date);
+        $this->db->where('adType','Facebook Share');
+        $this->db->where('pubKeyStats',$publisherKey);
+        $query=$this->db->get('pubStatistics');
+        $result=$query->result_array();
+
+        if($result){
+            $parameter=array(
+                'cpm'=>$result[0]['cpm']+$impressions
+            );
+            $this->db->where('date',$date);
+            $this->db->where('pubKeyStats',$publisherKey);
+            $this->db->update('pubStatistics',$parameter);
+        }else{
+            $parameter=array(
+                'pubKeyStats'=>$publisherKey,
+                'adType'=>'Facebook Share',
+                'date'=>$date,
+                'cpm'=>$impressions,
+                'clicks'=>0
+            );
+            $this->db->insert('pubStatistics',$parameter);
+        }
+
+
+        //Updating Publisher's Payment Table
+        $this->db->where('date',$date);
+        $this->db->where('pubKeyPayment',$publisherKey);
+        $this->db->where('transType','earned');
+        $this->db->where('description','Story Posting Earning');
+        $query=$this->db->get('pubPayment');
+        $result=$query->result_array();
+
+        if($result){
+            $parameter=array(
+                'amount'=>$result[0]['amount']+$publisherEarning
+            );
+            $this->db->where('date',$date);
+            $this->db->where('transType','earned');
+            $this->db->where('description','Story Posting Earning');
+            $this->db->where('pubKeyPayment',$publisherKey);
+            $this->db->update('pubPayment',$parameter);
+        }else{
+            $parameter=array(
+                'pubKeyPayment'=>$publisherKey,
+                'date'=>$date,
+                'amount'=>$publisherEarning,
+                'transType'=>'earned',
+                'description'=>'Story Posting Earning',
+                'transMethod'=>'-'
+            );
+            $this->db->insert('pubPayment',$parameter);
+        }
 
     }
 
