@@ -10,7 +10,7 @@
                 <legend>Edit Advertisement</legend>
                 <div class="well">
                     <div class="span2">
-                        <img src="<?php echo base_url('').$this->config->item('ImageUploadPath').$ad['image']; ?>" id="adImage" width="200px" height="250px" />
+                        <img src="<?php echo base_url('').$this->config->item('ImageUploadPath').$ad['image']; ?>" id="adImage" width="300px" height="225px" />
                     </div>
                     <div class="span5">
                         <p class="lead text-info" id="adTitle" style="margin: 1px; padding: 1px;"><?php echo $ad['title']; ?></p>
