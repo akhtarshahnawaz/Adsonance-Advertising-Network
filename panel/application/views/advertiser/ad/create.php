@@ -10,7 +10,7 @@
                 <legend>Create New advertisement</legend>
                 <div class="well">
                     <div class="span2">
-                        <img src="<?php assetLink(array('screenshot.png'=>'image')); ?>" id="adImage" width="200px" height="250px" />
+                        <img src="<?php assetLink(array('screenshot.png'=>'image')); ?>" id="adImage" width="300px" height="225px" />
                     </div>
                     <div class="span5">
                         <p class="lead text-info" id="adTitle" style="margin: 1px; padding: 1px;">Your Title Goes Here</p>
