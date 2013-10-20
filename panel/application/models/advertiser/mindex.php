@@ -213,4 +213,114 @@ class Mindex extends CI_Model
     }
 
 
+    public function sendPasswordResetEmail($email){
+        $this->db->where('username',strtolower($email));
+        $query=$this->db->get('advLogin');
+        $result=$query->result_array();
+        if(!empty($result)){
+            $this->sendResetMail($email);
+            $this->session->set_flashdata('notification', "<strong>Password reset link send! </strong> Open password reset link send to you by Email to proceed further.");
+            $this->session->set_flashdata('alertType', 'alert-success');
+            redirect('/advertiser/index/resetPassword/', 'refresh');
+        }else{
+            $this->session->set_flashdata('notification', "<strong>Sorry! </strong> This email is not registered with us.");
+            $this->session->set_flashdata('alertType', 'alert-error');
+            redirect('/advertiser/index/resetPassword/', 'refresh');
+        }
+
+    }
+
+
+    public function sendResetMail($email){
+        $this->load->library('encrypt');
+        $encryptedEmail=urlencode($this->encrypt->encode(strtolower($email)));
+        $verificationLink= site_url('advertiser/index/resetPassword').'/'.$encryptedEmail;
+
+        $message="Hello, \r\n";
+        $message.="You requested to reset your account Password on Adsonance.com \r\n \r\n";
+        $message.="Click on link below to reset your Account Password \r\n";
+        $message.=$verificationLink;
+        $message.=" \n\n If you haven't requested for Password reset then just ignore this message. \r\n";
+        $message.=" \n\n For any query related to account contact us at: \r\nE-Mail: support@adsonance.com \r\nPhone: +91-9810344604 \r\nWebsite: http://www.adsonance.com";
+
+        $this->load->library('email');
+        $this->email->from('admin@adsonance.com', 'Adsonance.com Password');
+        $this->email->reply_to('admin@adsonance.com', 'Adsonance.com');
+        $this->email->to($email);
+        $this->email->subject('Password reset detail Adsonance.com account');
+        $this->email->message($message);
+        $result=$this->email->send();
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    public function checkPasswordResetLink($resetCode){
+        $this->load->library('encrypt');
+        $verificationCode=urldecode($resetCode);
+        $Email=$this->encrypt->decode($verificationCode);
+        if($Email){
+            $this->db->where('username',$Email);
+            $query=$this->db->get('advLogin');
+            $result=$query->result_array();
+            if(!empty($result)){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+    public function updatePassword($resetCode,$data){
+        if($data['inputNewPassword']==$data['inputVerifyPassword']){
+            if(mb_strlen($data['inputNewPassword'])<8){
+                $this->session->set_flashdata('notification', "<strong>Sorry! </strong> Password must have at least of 8 characters");
+                $this->session->set_flashdata('alertType', 'alert-error');
+                redirect('/advertiser/index/resetPassword/'.'/'.$resetCode, 'refresh');
+            }else{
+                $this->load->library('encrypt');
+                $verificationCode=urldecode($resetCode);
+                $Email=$this->encrypt->decode($verificationCode);
+
+                $updateArray=array(
+                    'password'=>sha1($data['inputNewPassword'])
+                );
+                $this->db->where('username',$Email);
+                $this->db->update('advLogin',$updateArray);
+                $this->sendPasswordUpdateEmail($Email);
+
+                $this->session->set_flashdata('notification', "<strong>Success! </strong> Password Updated Succesfully");
+                $this->session->set_flashdata('alertType', 'alert-success');
+                redirect('/advertiser/index/resetPassword/'.'/'.$resetCode, 'refresh');
+            }
+        }else{
+            $this->session->set_flashdata('notification', "<strong>Sorry! </strong> Password Doesn't Match");
+            $this->session->set_flashdata('alertType', 'alert-error');
+            redirect('/advertiser/index/resetPassword/'.'/'.$resetCode, 'refresh');
+        }
+    }
+
+    public function sendPasswordUpdateEmail($email){
+        $message="Hello, \r\n";
+        $message.="You Password has been successfully updated on Adsonance.com \r\n \r\n";
+        $message.="If you have not updated your Password then contact immediately at support@adsonance.com \r\n";
+        $message.=" \n\n For any query related to account contact us at: \r\nE-Mail: support@adsonance.com \r\nPhone: +91-9810344604 \r\nWebsite: http://www.adsonance.com";
+
+        $this->load->library('email');
+        $this->email->from('admin@adsonance.com', 'Adsonance.com Password');
+        $this->email->reply_to('admin@adsonance.com', 'Adsonance.com');
+        $this->email->to($email);
+        $this->email->subject('Password Updated Succesfully Adsonance.com');
+        $this->email->message($message);
+        $result=$this->email->send();
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
