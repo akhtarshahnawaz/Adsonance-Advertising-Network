@@ -12,4 +12,6 @@ $config['timeBetweenAds']= 21600;
 
 
 $config['publisherPercentage']= 0.4;
+$config['adminPublishPublisherPercentage']= 0.1;
+
 
