@@ -282,4 +282,45 @@ class Index extends CI_Controller{
         $graphData.=']';
         echo $graphData;
     }
+
+
+    public function resetPassword($resetCode=null){
+        if($resetCode!=null){
+            $data=$this->input->post();
+                if(!empty($data)){
+                    $this->load->model('advertiser/mindex');
+                    $check=$this->mindex->checkPasswordResetLink($resetCode);
+                    if($check){
+                        $this->mindex->updatePassword($resetCode,$data);
+                    }
+                }else{
+                    $this->load->model('advertiser/mindex');
+                    $check=$this->mindex->checkPasswordResetLink($resetCode);
+                    if($check){
+                        if($this->session->flashdata('notification')){
+                            $data['alertType']=$this->session->flashdata('alertType');
+                            $data['notification']=$this->session->flashdata('notification');
+                        }
+                        $data['resetCode']=$resetCode;
+                        $this->load->view('advertiser/structs/head');
+                        $this->load->view('advertiser/main/newPassword',$data);
+                        $this->load->view('advertiser/structs/footer');
+                    }
+                }
+            }else{
+                $data=$this->input->post();
+                if(!empty($data)){
+                    $this->load->model('advertiser/mindex');
+                    $this->mindex->sendPasswordResetEmail($data['inputEmail']);
+                }else{
+                    if($this->session->flashdata('notification')){
+                        $data['alertType']=$this->session->flashdata('alertType');
+                        $data['notification']=$this->session->flashdata('notification');
+                    }
+                    $this->load->view('advertiser/structs/head');
+                    $this->load->view('advertiser/main/resetPassword',$data);
+                    $this->load->view('advertiser/structs/footer');
+                }
+        }
+    }
 }
