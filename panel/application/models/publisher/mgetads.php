@@ -139,37 +139,42 @@ class Mgetads extends CI_Model
             $whiteAds[]=$row['adId'];
         }
 
-        $this->db->or_where_in('adkeyBuffer',$whiteAds);
-        $this->db->where('pubKeyBuffer',$this->session->userdata('user_ID'));
-        $time=timestampToday()-$this->config->item('timeBetweenAds');
-        $this->db->where('timestamp >',$time);
-        $query=$this->db->get('adBuffer');
-        $result=$query->result_array();
+        if(!empty($whiteAds)){
+            $this->db->or_where_in('adkeyBuffer',$whiteAds);
+            $this->db->where('pubKeyBuffer',$this->session->userdata('user_ID'));
+            $time=timestampToday()-$this->config->item('timeBetweenAds');
+            $this->db->where('timestamp >',$time);
+            $query=$this->db->get('adBuffer');
+            $result=$query->result_array();
 
-        $blackAds=array();
+            $blackAds=array();
 
-        foreach($result as $row){
-            $blackAds[]=$row['adKeyBuffer'];
-        }
+            foreach($result as $row){
+                $blackAds[]=$row['adKeyBuffer'];
+            }
 
-
-        foreach($dailyAds as $key=>$row){
-            foreach($blackAds as $rowi){
-                if($row['adId']==$rowi){
-                    unset($dailyAds[$key]);
+                
+            foreach($dailyAds as $key=>$row){
+                foreach($blackAds as $rowi){
+                    if($row['adId']==$rowi){
+                        unset($dailyAds[$key]);
+                    }
                 }
             }
-        }
 
-        foreach($lifetimeAds as $key=>$row){
-            foreach($blackAds as $rowi){
-                if($row['adId']==$rowi){
-                    unset($lifetimeAds[$key]);
+            foreach($lifetimeAds as $key=>$row){
+                foreach($blackAds as $rowi){
+                    if($row['adId']==$rowi){
+                        unset($lifetimeAds[$key]);
+                    }
                 }
             }
+
+            return array('dailyAds'=>$dailyAds,'lifetimeAds'=>$lifetimeAds);
+        }else{
+            return null;
         }
 
-        return array('dailyAds'=>$dailyAds,'lifetimeAds'=>$lifetimeAds);
 
     }
 
