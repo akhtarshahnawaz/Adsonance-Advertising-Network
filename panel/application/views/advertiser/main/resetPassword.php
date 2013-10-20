@@ -38,7 +38,13 @@
     <?php
     $this->load->helper('form');
     $attributes = array('class' => 'form-signin');
-    echo form_open('advertiser/index/forgotPassword',$attributes);?>
+    echo form_open('advertiser/index/resetPassword',$attributes);?>
+
+
+    <p align="center" style="margin: 10px; padding: 10px;"><a href="http://www.adsonance.com"><img src="<?php assetLink(array('logo-adsonance-black.png'=>'image')); ?>"/></a></p>
+
+    <hr/>
+
 
     <?php if(isset($notification)): ?>
     <div class="alert <?php echo $alertType;?>">
@@ -47,26 +53,18 @@
     </div>
     <?php endif;?>
 
-
-    <h2 class="form-signin-heading">Password Reset</h2>
-
     <div class="control-group">
-        <label class="control-label" for="inputNewPassword">New Password</label>
         <div class="controls">
-            <input value=""  name="inputNewPassword" class="input-xlarge" type="password" id="inputNewPassword" placeholder="New Password">
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="inputVerifyPassword">Verify Password</label>
-        <div class="controls">
-            <input  name="inputVerifyPassword" class="input-xlarge" type="password" id="inputVerifyPassword" placeholder="Verify Password">
+            <input value=""  name="inputEmail" class="input-block-level" type="email" id="inputEmail" placeholder="Enter Your Email">
         </div>
     </div>
 
-    <button class="btn btn-large btn-primary" type="submit">Reset Password</button>
+    <button class="btn btn-large btn-inverse btn-block" type="submit">Reset Password</button>
     </form>
 
+
 </div>
+</br></br></br></br></br></br></br></br></br></br>
 <?php
 loadAsset(array('jquery-1.7.1.min.js'=>'script'));
 loadBootstrap('script.min') ;

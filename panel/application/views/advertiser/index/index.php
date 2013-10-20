@@ -109,7 +109,7 @@
                 <td><?php echo $row['name'] ?></td>
                 <td><?php echo dateToString($row['startDate']); ?></td>
                 <td><?php if($row['endDate']!='N/A'){ echo dateToString($row['endDate']);}else{ echo $row['endDate']; } ?></td>
-                <td><?php if($this->session->userdata('currency')=='INR'){ echo '&#8377; ';}elseif($this->session->userdata('currency')=='USD'){ echo '$ ';} echo $row['budget'].'.00'; ?><p style="margin: 0px; padding: 0px;"><small><?php echo $row['budgetPeriod'] ?></small></p></td>
+                <td><?php if($this->session->userdata('currency')=='INR'){ echo '&#8377; ';}elseif($this->session->userdata('currency')=='USD'){ echo '$ ';} echo $row['budget']; ?><p style="margin: 0px; padding: 0px;"><small><?php echo $row['budgetPeriod'] ?></small></p></td>
                 <td><?php if(isset($row['clicks'])){echo $row['clicks'];}else{echo '-';} ?></td>
                 <td><?php if(isset($row['cpm'])){echo $row['cpm'];}else{echo '-';} ?></td>
                 <td><?php if(isset($row['cpm']) && isset($row['clicks']) && $row['cpm']!=0){echo $row['clicks']*100/$row['cpm'].' %'; } else { echo '-';}?></td>

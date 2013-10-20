@@ -60,7 +60,7 @@
     <input name="username"  type="text" class="input-block-level" placeholder="E-mail Address">
         <input name="password"  type="password" class="input-block-level" placeholder="Password">
         <button class="btn btn-large btn-block btn-info" type="submit"><i class="icon-lock"></i> Login</button>
-               <!-- <p class="pull-right"><a href="#" class="text-warning">Forgot Your Password ?</a></p> -->
+    <p class="pull-right"><a href="<?php echo site_url('advertiser/index/resetPassword');?>" class="text-warning">Forgot Your Password ?</a></p>
 
     </form>
 
