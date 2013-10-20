@@ -99,7 +99,8 @@ class Mindex extends CI_Model
 
     public function addUser($userId,$userData){
         $data = array(
-            'facebookId'=>$userId
+            'facebookId'=>$userId,
+            'totalfriends'=>$this->totalFriends()
         );
         $this->db->insert('pubLogin',$data);
         $insertID=$this->db->insert_id();
