@@ -14,6 +14,7 @@
                     <li class="active"><a href="<?php echo site_url("admin/advertisers/index") ?>">Advertisers</a></li>
                     <li class="active"><a href="<?php echo site_url("admin/publishers/index") ?>">Publishers</a></li>
                     <li class="active"><a href="<?php echo site_url("admin/publish/index") ?>">Publish Ads</a></li>
+                    <li class="active"><a href="<?php echo site_url("admin/index/settings") ?>">Settings</a></li>
                 </ul>
 
                 <a href="<?php echo site_url('admin/index/logout');?>" class="btn btn-warning btn-mini pull-right"><i class="icon-off"></i> Logout</a>

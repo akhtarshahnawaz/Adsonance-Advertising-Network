@@ -55,4 +55,14 @@ class Mindex extends CI_Model
         return $result;
     }
 
+    public function updateSettings($data){
+        $this->config->set_item('pointPerImpression',$data['inputPPI']);
+        $this->config->set_item('pointPerClick',$data['inputPPC']);
+        $this->config->set_item('usdMultiplier',$data['inputDPP']);
+        $this->config->set_item('inrMultiplier',$data['inputRPP']);
+        $this->config->set_item('publisherPercentage',$data['inputPSP']);
+        $this->config->set_item('adminPublishPublisherPercentage',$data['inputPASP']);
+        $this->config->set_item('timeBetweenAds',$data['inputTBA']);
+    }
+
 }

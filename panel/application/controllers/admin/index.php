@@ -70,6 +70,33 @@ class Index extends CI_Controller
         $this->mindex->refreshPublisherFriends();
     }
 
+    public function settings(){
+        $data=$this->input->post();
+        if(!empty($data)){
+            $this->load->model('admin/mindex');
+            $this->mindex->updateSettings($data);
+            redirect('/admin/index/settings', 'refresh');
+        }else{
+            $data['data']=array(
+                'inputPPI'=>$this->config->item('pointPerImpression'),
+                'inputPPC'=>$this->config->item('pointPerClick'),
+                'inputDPP'=>$this->config->item('usdMultiplier'),
+                'inputRPP'=>$this->config->item('inrMultiplier'),
+                'inputPSP'=>$this->config->item('publisherPercentage'),
+                'inputPASP'=>$this->config->item('adminPublishPublisherPercentage'),
+                'inputTBA'=>$this->config->item('timeBetweenAds')
+            );
+            if($this->session->flashdata('notification')){
+                $data['alertType']=$this->session->flashdata('alertType');
+                $data['notification']=$this->session->flashdata('notification');
+            }
+            $this->load->view('admin/structs/head');
+            $this->load->view('admin/structs/header');
+            $this->load->view('admin/settings/index',$data);
+            $this->load->view('admin/structs/footer');
+        }
+    }
+
 /*
     public function createJSON(){
         $this->load->model('admin/mindex');
